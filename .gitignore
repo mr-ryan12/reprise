@@ -1,12 +1,8 @@
-node_modules
-
-/docs
-
 .DS_Store
 .env
-.env.*
-dist
-build
-coverage
-.vscode
-.idea
+/node_modules/
+
+# React Router
+/.react-router/
+/build/
+/docs/
