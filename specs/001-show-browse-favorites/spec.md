@@ -120,6 +120,13 @@ and unfavoriting a show.
 - What happens when the search query contains special characters? The system handles them gracefully without errors.
 - What happens when the shows database is empty (initial state before data is seeded)? The list page displays a meaningful empty state rather than a blank page.
 
+## Clarifications
+
+### Session 2026-03-26
+
+- Q: How is Phish.in data imported — one-time seed, periodic sync, or on-demand? → A: One-time seed script. Import all shows once; manually re-run to refresh.
+- Q: What happens when a user visits `/` (root URL)? → A: Redirect `/` to `/shows`.
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
@@ -164,7 +171,7 @@ and unfavoriting a show.
 
 ## Assumptions
 
-- Show and setlist data will be sourced from the Phish.in API and stored locally in PostgreSQL for fast querying. The system will not serve data directly from the external API on every request.
+- Show and setlist data will be imported from the Phish.in API into PostgreSQL via a one-time seed script. The seed script can be manually re-run to refresh data. The system does not query the external API at runtime.
 - The initial data set covers the full Phish catalog (~2,000 shows spanning 1983–present).
 - Search is text-based (no fuzzy matching or full-text search engine required for MVP). Simple case-insensitive substring matching is sufficient.
 - Pagination uses a fixed page size (e.g., 25 shows per page) for MVP.
@@ -173,4 +180,4 @@ and unfavoriting a show.
 - Show data is read-only from the user's perspective — users cannot edit show or setlist information.
 - Authentication uses a username-only model (no password, no email) following the same pattern as the ThreadMind project. Accounts are auto-created on first login.
 - User sessions are stored in signed HTTP-only cookies with a long expiry (1 year). A SESSION_SECRET environment variable is required.
-- Expected routes: `/login`, `/shows` (list + search), `/shows/:showId` (detail), `/favorites` (authenticated).
+- Expected routes: `/` (redirects to `/shows`), `/login`, `/shows` (list + search), `/shows/:showId` (detail), `/favorites` (authenticated).
