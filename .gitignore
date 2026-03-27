@@ -8,3 +8,6 @@
 /docs/
 
 .yarn/install-state.gz
+
+# Prisma generated client
+/generated/
