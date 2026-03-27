@@ -21,8 +21,8 @@
 
 - [x] T001 Create `.env.example` with DATABASE_URL and SESSION_SECRET variables
 - [x] T002 Define Prisma schema with all 6 models (Venue, Show, Song, Track, User, Favorite) in `prisma/schema.prisma`
-- [ ] T003 Run Prisma migration to create database tables via `yarn prisma migrate dev`
-- [ ] T004 [P] Configure route definitions for all 6 routes in `app/routes.ts`
+- [x] T003 Run Prisma migration to create database tables via `yarn prisma migrate dev`
+- [x] T004 [P] Configure route definitions for all 6 routes in `app/routes.ts`
 
 **Checkpoint**: Database schema exists, routes are configured, environment template is ready.
 
