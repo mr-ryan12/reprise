@@ -6,3 +6,5 @@
 /.react-router/
 /build/
 /docs/
+
+.yarn/install-state.gz
