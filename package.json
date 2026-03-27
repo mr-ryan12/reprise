@@ -6,7 +6,11 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "typecheck": "react-router typegen && tsc",
+    "db:push": "prisma db push",
+    "migrate:new": "prisma migrate dev",
+    "migrate:latest": "prisma migrate deploy",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
