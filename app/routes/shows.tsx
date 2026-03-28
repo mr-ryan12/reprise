@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef } from "react";
-import { Form, Link, useLoaderData, useNavigation, useSubmit } from "react-router";
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useNavigation,
+  useSubmit,
+} from "react-router";
 import { Calendar, Loader2, MapPin, Search, X } from "lucide-react";
 import { getShows, searchShows } from "~/services/show.server";
 import { Button } from "~/components/ui/button";
@@ -113,9 +119,7 @@ export default function Shows() {
       {shows.length === 0 ? (
         <div className="rounded-lg border border-border bg-card px-4 py-12 text-center">
           <p className="text-muted-foreground">
-            {query
-              ? `No shows found for "${query}"`
-              : "No shows available."}
+            {query ? `No shows found for "${query}"` : "No shows available."}
           </p>
         </div>
       ) : (
