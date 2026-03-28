@@ -53,10 +53,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Replace default home route with redirect to `/shows` in `app/routes/home.tsx`
-- [ ] T012 [US1] Implement shows list loader (paginated, date descending) and page component in `app/routes/shows.tsx`
-- [ ] T013 [US1] Style show list cards (date, venue name, city/state) with responsive layout (375px–1440px+) in `app/routes/shows.tsx`
-- [ ] T014 [US1] Add pagination controls (previous/next, page indicator) to `app/routes/shows.tsx`
+- [x] T011 [US1] Replace default home route with redirect to `/shows` in `app/routes/home.tsx`
+- [x] T012 [US1] Implement shows list loader (paginated, date descending) and page component in `app/routes/shows.tsx`
+- [x] T013 [US1] Style show list cards (date, venue name, city/state) with responsive layout (375px–1440px+) in `app/routes/shows.tsx`
+- [x] T014 [US1] Add pagination controls (previous/next, page indicator) to `app/routes/shows.tsx`
 
 **Checkpoint**: User Story 1 is fully functional. Fans can browse the full show catalog with pagination. Stop and validate.
 
