@@ -136,6 +136,7 @@ async function main() {
             setName: track.set_name,
             position: track.position,
             duration: track.duration,
+            mp3Url: track.mp3_url ?? null,
           },
         });
       }
