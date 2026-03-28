@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Venue {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  city      String
+  state     String
+  country   String   @default("USA")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  shows Show[]
+
+  @@index([name])
+}
+
+model Show {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  duration  Int? // milliseconds
+  tourName  String?
+  notes     String? // taper_notes from API
+  venueId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  venue     Venue      @relation(fields: [venueId], references: [id])
+  tracks    Track[]
+  favorites Favorite[]
+
+  @@index([date])
+  @@index([venueId])
+}
+
+model Song {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  original  Boolean  @default(true)
+  artist    String? // non-null for covers
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tracks Track[]
+
+  @@index([title])
+}
+
+model Track {
+  id       String @id @default(cuid())
+  showId   String
+  songId   String
+  setName  String // "Set 1", "Set 2", "Set 3", "Encore"
+  position Int // 1-indexed, global across show
+  duration Int? // milliseconds
+
+  show Show @relation(fields: [showId], references: [id], onDelete: Cascade)
+  song Song @relation(fields: [songId], references: [id])
+
+  @@unique([showId, position])
+  @@index([showId])
+  @@index([songId])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  createdAt DateTime @default(now())
+
+  favorites Favorite[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  showId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  show Show @relation(fields: [showId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, showId])
+  @@index([userId])
+  @@index([showId])
+}
