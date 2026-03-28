@@ -34,12 +34,12 @@
 
 **Warning**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Implement Phish.in API adapter service in `app/services/phishin.server.ts` (Axios client with pagination helpers and rate limiting)
-- [ ] T006 Create seed script in `prisma/seed.ts` to import venues, shows, songs, and tracks from Phish.in API v2
-- [ ] T007 Configure seed command in `package.json` and run `yarn prisma db seed` to populate data
-- [ ] T008 [P] Implement auth utilities in `app/utils/auth.server.ts` (createCookieSessionStorage, requireAuth, getOptionalUser, findOrCreateUser, createUserSession, logout)
-- [ ] T009 [P] Implement show service in `app/services/show.server.ts` (getShows with pagination, getShowByDate with tracks, searchShows)
-- [ ] T010 [P] Implement favorite service in `app/services/favorite.server.ts` (toggleFavorite, getUserFavorites, isShowFavorited, getUserFavoriteShowIds)
+- [x] T005 Implement Phish.in API adapter service in `app/services/phishin.server.ts` (Axios client with pagination helpers and rate limiting)
+- [x] T006 Create seed script in `prisma/seed.ts` to import venues, shows, songs, and tracks from Phish.in API v2
+- [x] T007 Configure seed command in `package.json` and run `yarn prisma db seed` to populate data
+- [x] T008 [P] Implement auth utilities in `app/utils/auth.server.ts` (createCookieSessionStorage, requireAuth, getOptionalUser, findOrCreateUser, createUserSession, logout)
+- [x] T009 [P] Implement show service in `app/services/show.server.ts` (getShows with pagination, getShowByDate with tracks, searchShows)
+- [x] T010 [P] Implement favorite service in `app/services/favorite.server.ts` (toggleFavorite, getUserFavorites, isShowFavorited, getUserFavoriteShowIds)
 
 **Checkpoint**: Foundation ready — database is seeded, auth is wired, services are available. User story implementation can now begin.
 
