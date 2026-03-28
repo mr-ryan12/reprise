@@ -70,10 +70,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Add search form (submit-based, `<Form>` with GET method) to `app/routes/shows.tsx`
-- [ ] T016 [US2] Update shows loader to read `q` search param and filter via show service in `app/routes/shows.tsx`
-- [ ] T017 [US2] Add empty-state message when no shows match the search query in `app/routes/shows.tsx`
-- [ ] T018 [US2] Ensure pagination resets to page 1 on new search and preserves query across pages in `app/routes/shows.tsx`
+- [x] T015 [US2] Add search form (submit-based, `<Form>` with GET method) to `app/routes/shows.tsx`
+- [x] T016 [US2] Update shows loader to read `q` search param and filter via show service in `app/routes/shows.tsx`
+- [x] T017 [US2] Add empty-state message when no shows match the search query in `app/routes/shows.tsx`
+- [x] T018 [US2] Ensure pagination resets to page 1 on new search and preserves query across pages in `app/routes/shows.tsx`
 
 **Checkpoint**: User Story 2 is fully functional. Search works with URL params, empty state displays, and pagination integrates with search.
 
