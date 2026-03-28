@@ -24,7 +24,7 @@
 - [x] T003 Add `mp3_url` to `PhishinTrack` interface in `app/services/phishin.server.ts`
 - [x] T004 Update seed script to store `mp3_url` during seeding in `prisma/seed.ts`
 - [x] T005 Create backfill script to populate mp3Url on existing tracks in `prisma/backfill-mp3-urls.ts` and add `backfill:mp3urls` script to `package.json`
-- [ ] T006 Run `yarn backfill:mp3urls` to populate mp3Url values
+- [x] T006 Run `yarn backfill:mp3urls` to populate mp3Url values
 
 ---
 
