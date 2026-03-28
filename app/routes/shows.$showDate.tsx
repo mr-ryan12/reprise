@@ -1,4 +1,11 @@
-import { Form, Link, redirect, useLoaderData } from "react-router";
+import {
+  Form,
+  isRouteErrorResponse,
+  Link,
+  redirect,
+  useLoaderData,
+  useRouteError,
+} from "react-router";
 import { ArrowLeft, Calendar, Clock, Heart, MapPin } from "lucide-react";
 import { getShowByDate } from "~/services/show.server";
 import { isShowFavorited, toggleFavorite } from "~/services/favorite.server";
@@ -197,6 +204,37 @@ export default function ShowDetail() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  if (!data?.show) return [{ title: "Show Not Found | Reprise" }];
+  return [{ title: `${data.show.date} - ${data.show.venue.name} | Reprise` }];
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const is404 =
+    isRouteErrorResponse(error) && error.status === 404;
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-8">
+      <Link
+        to="/shows"
+        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" />
+        Back to shows
+      </Link>
+      <h1 className="mb-4 text-2xl font-bold">
+        {is404 ? "Show Not Found" : "Error"}
+      </h1>
+      <p className="text-muted-foreground">
+        {is404
+          ? "We couldn't find a show for that date."
+          : "Something went wrong loading this show."}
+      </p>
     </div>
   );
 }

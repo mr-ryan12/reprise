@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef } from "react";
 import {
   Form,
+  isRouteErrorResponse,
   Link,
   useLoaderData,
   useNavigation,
+  useRouteError,
   useSubmit,
 } from "react-router";
 import { Calendar, Heart, Loader2, MapPin, Search, X } from "lucide-react";
@@ -201,6 +203,27 @@ export default function Shows() {
           </Button>
         </nav>
       )}
+    </div>
+  );
+}
+
+export function meta() {
+  return [{ title: "Shows | Reprise" }];
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const message = isRouteErrorResponse(error)
+    ? error.data || "Something went wrong loading shows."
+    : "An unexpected error occurred.";
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-8">
+      <h1 className="mb-4 text-2xl font-bold">Error</h1>
+      <p className="text-muted-foreground">{message}</p>
+      <Link to="/shows" className="mt-4 inline-block text-sm underline">
+        Try again
+      </Link>
     </div>
   );
 }

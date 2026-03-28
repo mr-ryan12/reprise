@@ -1,4 +1,9 @@
-import { Link, useLoaderData } from "react-router";
+import {
+  isRouteErrorResponse,
+  Link,
+  useLoaderData,
+  useRouteError,
+} from "react-router";
 import { Calendar, Heart, MapPin } from "lucide-react";
 import { getUserFavorites } from "~/services/favorite.server";
 import { requireAuth } from "~/utils/auth.server";
@@ -80,6 +85,27 @@ export default function Favorites() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+export function meta() {
+  return [{ title: "Favorites | Reprise" }];
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const message = isRouteErrorResponse(error)
+    ? error.data || "Something went wrong loading favorites."
+    : "An unexpected error occurred.";
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-8">
+      <h1 className="mb-4 text-2xl font-bold">Error</h1>
+      <p className="text-muted-foreground">{message}</p>
+      <Link to="/shows" className="mt-4 inline-block text-sm underline">
+        Back to shows
+      </Link>
     </div>
   );
 }

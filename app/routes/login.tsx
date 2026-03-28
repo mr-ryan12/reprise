@@ -75,3 +75,7 @@ export default function Login() {
     </div>
   );
 }
+
+export function meta() {
+  return [{ title: "Log In | Reprise" }];
+}
