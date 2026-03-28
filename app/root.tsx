@@ -13,6 +13,8 @@ import { Heart, LogOut } from "lucide-react";
 import { prisma } from "~/lib/db.server";
 import { getOptionalUser } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
+import { PlayerProvider } from "~/components/player-provider";
+import { usePlayer } from "~/lib/player-context";
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -67,7 +69,7 @@ export default function App() {
   const { user } = useLoaderData<typeof loader>();
 
   return (
-    <>
+    <PlayerProvider>
       <header className="border-b border-border">
         <nav className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <Link to="/shows" className="text-lg font-bold tracking-tight">
@@ -99,8 +101,21 @@ export default function App() {
           </div>
         </nav>
       </header>
+      <PlayerPaddedContent />
+    </PlayerProvider>
+  );
+}
+
+function PlayerPaddedContent() {
+  const { currentTrack, isMinimized } = usePlayer();
+  const padding = !currentTrack ? 0 : isMinimized ? "3.5rem" : "8rem";
+  return (
+    <div
+      className="transition-[padding-bottom] duration-300 ease-in-out"
+      style={{ paddingBottom: padding }}
+    >
       <Outlet />
-    </>
+    </div>
   );
 }
 
