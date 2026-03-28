@@ -110,6 +110,14 @@ buttons skip correctly. Verify playback stops at end of set.
 - Q: Fixed bar or overlay? → A: Overlay — the player sits on top of page content, no padding adjustment needed.
 - Q: Play buttons per track or clickable rows? → A: Clickable track rows. Track number shows play icon on hover, playing/paused indicator for active track. Clicking the active track toggles pause.
 
+### Session 2026-03-27 (Round 2)
+
+- Q: Show date format in the player? → A: MM/DD/YYYY format.
+- Q: Player z-index and interaction with nav sheet on mobile? → A: Player remains visible while sheet is open. The sheet won't have enough links to overlap the player area.
+- Q: What happens when clicking a track from a different show while one is playing? → A: Queue resets to the new show's set. The user has navigated to a different show detail page, so the queue should pick up from there.
+- Q: Error message display when audio fails? → A: Brief inline message in the player itself (e.g., "Track unavailable"). If one track fails, the others likely will too.
+- Q: Duration display for tracks with unknown duration? → A: Show "--:--" until `loadedmetadata` fires with the actual duration.
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
