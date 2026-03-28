@@ -10,9 +10,10 @@ import { ArrowLeft, Calendar, Clock, Heart, MapPin } from "lucide-react";
 import { getShowByDate } from "~/services/show.server";
 import { isShowFavorited, toggleFavorite } from "~/services/favorite.server";
 import { getOptionalUser, requireAuth } from "~/utils/auth.server";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { TrackRow } from "~/components/track-row";
+import type { PlayableTrack } from "~/lib/player-context";
 import type { Route } from "./+types/shows.$showDate";
 
 export async function loader({ params, request }: Route.LoaderArgs) {
@@ -52,6 +53,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
           id: t.id,
           position: t.position,
           duration: t.duration,
+          mp3Url: t.mp3Url,
           song: t.song,
         })),
       })),
@@ -170,38 +172,39 @@ export default function ShowDetail() {
         </div>
       ) : (
         <div className="flex flex-col gap-6">
-          {sets.map((set) => (
-            <div key={set.name}>
-              <h2 className="mb-3 text-lg font-semibold">{set.name}</h2>
-              <div className="rounded-lg border border-border bg-card">
-                {set.tracks.map((track, i) => (
-                  <div key={track.id}>
-                    {i > 0 && <Separator />}
-                    <div className="flex items-center justify-between px-4 py-2.5">
-                      <div className="flex items-center gap-3">
-                        <span className="w-6 text-right text-xs text-muted-foreground">
-                          {track.position}
-                        </span>
-                        <span className="font-medium">
-                          {track.song.title}
-                        </span>
-                        {!track.song.original && track.song.artist && (
-                          <Badge variant="secondary" className="text-xs">
-                            {track.song.artist}
-                          </Badge>
-                        )}
-                      </div>
-                      {track.duration && (
-                        <span className="text-sm text-muted-foreground">
-                          {formatDuration(track.duration)}
-                        </span>
-                      )}
+          {sets.map((set) => {
+            const setTracks: PlayableTrack[] = set.tracks
+              .filter((t) => t.mp3Url)
+              .map((t) => ({
+                id: t.id,
+                mp3Url: t.mp3Url!,
+                songTitle: t.song.title,
+                showDate: show.date,
+                venueName: show.venue.name,
+                setName: set.name,
+                position: t.position,
+              }));
+
+            return (
+              <div key={set.name}>
+                <h2 className="mb-3 text-lg font-semibold">{set.name}</h2>
+                <div className="rounded-lg border border-border bg-card">
+                  {set.tracks.map((track, i) => (
+                    <div key={track.id}>
+                      {i > 0 && <Separator />}
+                      <TrackRow
+                        track={track}
+                        showDate={show.date}
+                        venueName={show.venue.name}
+                        setName={set.name}
+                        setTracks={setTracks}
+                      />
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

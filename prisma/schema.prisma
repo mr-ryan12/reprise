@@ -55,12 +55,13 @@ model Song {
 }
 
 model Track {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
   showId   String
   songId   String
-  setName  String // "Set 1", "Set 2", "Set 3", "Encore"
-  position Int // 1-indexed, global across show
-  duration Int? // milliseconds
+  setName  String  // "Set 1", "Set 2", "Set 3", "Encore"
+  position Int     // 1-indexed, global across show
+  duration Int?    // milliseconds
+  mp3Url   String? // Phish.in audio stream URL
 
   show Show @relation(fields: [showId], references: [id], onDelete: Cascade)
   song Song @relation(fields: [songId], references: [id])

@@ -34,6 +34,7 @@ export interface PhishinTrack {
   set_name: string;
   position: number;
   duration: number | null;
+  mp3_url: string | null;
   songs: PhishinSong[];
 }
 
