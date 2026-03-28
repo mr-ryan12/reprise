@@ -6,8 +6,10 @@ import {
   useNavigation,
   useSubmit,
 } from "react-router";
-import { Calendar, Loader2, MapPin, Search, X } from "lucide-react";
+import { Calendar, Heart, Loader2, MapPin, Search, X } from "lucide-react";
 import { getShows, searchShows } from "~/services/show.server";
+import { getUserFavoriteShowIds } from "~/services/favorite.server";
+import { getOptionalUser } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import type { Route } from "./+types/shows";
@@ -18,9 +20,14 @@ export async function loader({ request }: Route.LoaderArgs) {
   const page = Math.max(1, Number(url.searchParams.get("page") ?? 1));
 
   try {
-    const result = query
-      ? await searchShows(query, page)
-      : await getShows(page);
+    const [result, userId] = await Promise.all([
+      query ? searchShows(query, page) : getShows(page),
+      getOptionalUser(request),
+    ]);
+
+    const favoriteShowIds = userId
+      ? await getUserFavoriteShowIds(userId)
+      : new Set<string>();
 
     return {
       shows: result.shows.map((show) => ({
@@ -28,6 +35,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         date: show.date.toISOString().split("T")[0],
         tourName: show.tourName,
         venue: show.venue,
+        isFavorited: favoriteShowIds.has(show.id),
       })),
       totalPages: result.totalPages,
       currentPage: result.currentPage,
@@ -140,6 +148,9 @@ export default function Shows() {
                   {show.venue.name} &middot; {show.venue.city},{" "}
                   {show.venue.state}
                 </span>
+                {show.isFavorited && (
+                  <Heart className="size-3.5 shrink-0 fill-red-500 text-red-500" />
+                )}
               </div>
             </Link>
           ))}

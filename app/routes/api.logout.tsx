@@ -1,8 +1,9 @@
-import { redirect } from "react-router";
+import { logout } from "~/utils/auth.server";
+import type { Route } from "./+types/api.logout";
 
-export async function action() {
+export async function action({ request }: Route.ActionArgs) {
   try {
-    return redirect("/login");
+    return await logout(request);
   } catch (error) {
     console.error("Failed to logout:", error);
     throw new Response("Failed to logout", { status: 500 });

@@ -1,12 +1,18 @@
 import {
+  Form,
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
-
+import { Heart, LogOut } from "lucide-react";
+import { prisma } from "~/lib/db.server";
+import { getOptionalUser } from "~/utils/auth.server";
+import { Button } from "~/components/ui/button";
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -22,6 +28,22 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+
+export async function loader({ request }: Route.LoaderArgs) {
+  try {
+    const userId = await getOptionalUser(request);
+    if (!userId) return { user: null };
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { username: true },
+    });
+    return { user };
+  } catch (error) {
+    console.error("Failed to load user session:", error);
+    return { user: null };
+  }
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -42,7 +64,44 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const { user } = useLoaderData<typeof loader>();
+
+  return (
+    <>
+      <header className="border-b border-border">
+        <nav className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+          <Link to="/shows" className="text-lg font-bold tracking-tight">
+            Reprise
+          </Link>
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/favorites">
+                    <Heart className="size-4" />
+                    Favorites
+                  </Link>
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  {user.username}
+                </span>
+                <Form method="post" action="/api/logout">
+                  <Button variant="ghost" size="icon-sm" aria-label="Log out">
+                    <LogOut className="size-4" />
+                  </Button>
+                </Form>
+              </>
+            ) : (
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/login">Log in</Link>
+              </Button>
+            )}
+          </div>
+        </nav>
+      </header>
+      <Outlet />
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

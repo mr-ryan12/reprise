@@ -1,11 +1,14 @@
-import { Link, useLoaderData } from "react-router";
-import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react";
+import { Form, Link, redirect, useLoaderData } from "react-router";
+import { ArrowLeft, Calendar, Clock, Heart, MapPin } from "lucide-react";
 import { getShowByDate } from "~/services/show.server";
+import { isShowFavorited, toggleFavorite } from "~/services/favorite.server";
+import { getOptionalUser, requireAuth } from "~/utils/auth.server";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import type { Route } from "./+types/shows.$showDate";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
   const { showDate } = params;
 
   try {
@@ -14,6 +17,11 @@ export async function loader({ params }: Route.LoaderArgs) {
     if (!show) {
       throw new Response("Show not found", { status: 404 });
     }
+
+    const userId = await getOptionalUser(request);
+    const isFavorited = userId
+      ? await isShowFavorited(userId, show.id)
+      : null;
 
     const tracksBySet = new Map<string, typeof show.tracks>();
     for (const track of show.tracks) {
@@ -40,11 +48,32 @@ export async function loader({ params }: Route.LoaderArgs) {
           song: t.song,
         })),
       })),
+      isFavorited,
     };
   } catch (error) {
     if (error instanceof Response) throw error;
     console.error("Failed to load show:", error);
     throw new Response("Failed to load show", { status: 500 });
+  }
+}
+
+export async function action({ params, request }: Route.ActionArgs) {
+  const { showDate } = params;
+
+  try {
+    const userId = await requireAuth(request);
+    const show = await getShowByDate(showDate);
+
+    if (!show) {
+      throw new Response("Show not found", { status: 404 });
+    }
+
+    await toggleFavorite(userId, show.id);
+    return redirect(`/shows/${showDate}`);
+  } catch (error) {
+    if (error instanceof Response) throw error;
+    console.error("Failed to toggle favorite:", error);
+    throw new Response("Failed to toggle favorite", { status: 500 });
   }
 }
 
@@ -67,7 +96,7 @@ function formatDuration(ms: number) {
 }
 
 export default function ShowDetail() {
-  const { show, sets } = useLoaderData<typeof loader>();
+  const { show, sets, isFavorited } = useLoaderData<typeof loader>();
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
@@ -79,31 +108,51 @@ export default function ShowDetail() {
         Back to shows
       </Link>
 
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight">
-          {formatDate(show.date)}
-        </h1>
-        <div className="mt-2 flex flex-col gap-1 text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <MapPin className="size-4 shrink-0" />
-            <span>
-              {show.venue.name} &middot; {show.venue.city}, {show.venue.state}
-              {show.venue.country !== "USA" && `, ${show.venue.country}`}
-            </span>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {formatDate(show.date)}
+          </h1>
+          <div className="mt-2 flex flex-col gap-1 text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <MapPin className="size-4 shrink-0" />
+              <span>
+                {show.venue.name} &middot; {show.venue.city}, {show.venue.state}
+                {show.venue.country !== "USA" && `, ${show.venue.country}`}
+              </span>
+            </div>
+            {show.tourName && (
+              <div className="flex items-center gap-2">
+                <Calendar className="size-4 shrink-0" />
+                <span>{show.tourName}</span>
+              </div>
+            )}
+            {show.duration && (
+              <div className="flex items-center gap-2">
+                <Clock className="size-4 shrink-0" />
+                <span>{formatDuration(show.duration)}</span>
+              </div>
+            )}
           </div>
-          {show.tourName && (
-            <div className="flex items-center gap-2">
-              <Calendar className="size-4 shrink-0" />
-              <span>{show.tourName}</span>
-            </div>
-          )}
-          {show.duration && (
-            <div className="flex items-center gap-2">
-              <Clock className="size-4 shrink-0" />
-              <span>{formatDuration(show.duration)}</span>
-            </div>
-          )}
         </div>
+
+        <Form method="post">
+          <input type="hidden" name="intent" value="favorite" />
+          <Button
+            type="submit"
+            variant="ghost"
+            size="icon"
+            aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart
+              className={
+                isFavorited
+                  ? "size-5 fill-red-500 text-red-500"
+                  : "size-5 text-muted-foreground"
+              }
+            />
+          </Button>
+        </Form>
       </div>
 
       {sets.length === 0 ? (
