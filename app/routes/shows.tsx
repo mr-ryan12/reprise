@@ -1,5 +1,6 @@
-import { Form, Link, useLoaderData } from "react-router";
-import { Calendar, MapPin, Search, X } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
+import { Form, Link, useLoaderData, useNavigation, useSubmit } from "react-router";
+import { Calendar, Loader2, MapPin, Search, X } from "lucide-react";
 import { getShows, searchShows } from "~/services/show.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -10,21 +11,26 @@ export async function loader({ request }: Route.LoaderArgs) {
   const query = url.searchParams.get("q")?.trim() ?? "";
   const page = Math.max(1, Number(url.searchParams.get("page") ?? 1));
 
-  const result = query
-    ? await searchShows(query, page)
-    : await getShows(page);
+  try {
+    const result = query
+      ? await searchShows(query, page)
+      : await getShows(page);
 
-  return {
-    shows: result.shows.map((show) => ({
-      id: show.id,
-      date: show.date.toISOString().split("T")[0],
-      tourName: show.tourName,
-      venue: show.venue,
-    })),
-    totalPages: result.totalPages,
-    currentPage: result.currentPage,
-    query,
-  };
+    return {
+      shows: result.shows.map((show) => ({
+        id: show.id,
+        date: show.date.toISOString().split("T")[0],
+        tourName: show.tourName,
+        venue: show.venue,
+      })),
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      query,
+    };
+  } catch (error) {
+    console.error("Failed to load shows:", error);
+    throw new Response("Failed to load shows", { status: 500 });
+  }
 }
 
 function formatDate(dateString: string) {
@@ -48,25 +54,53 @@ function paginationHref(page: number, query: string) {
 export default function Shows() {
   const { shows, totalPages, currentPage, query } =
     useLoaderData<typeof loader>();
+  const submit = useSubmit();
+  const navigation = useNavigation();
+  const formRef = useRef<HTMLFormElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const isSearching =
+    navigation.state === "loading" &&
+    new URLSearchParams(navigation.location?.search).has("q");
+
+  const handleChange = useCallback(() => {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      if (formRef.current) {
+        submit(formRef.current, { replace: true });
+      }
+    }, 300);
+  }, [submit]);
+
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold tracking-tight">Shows</h1>
 
-      <Form method="get" action="/shows" className="mb-6 flex gap-2">
+      <Form
+        ref={formRef}
+        method="get"
+        action="/shows"
+        className="mb-6 flex gap-2"
+      >
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          {isSearching ? (
+            <Loader2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+          ) : (
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          )}
           <Input
             type="search"
             name="q"
             placeholder="Search by date, venue, or city..."
             defaultValue={query}
+            onChange={handleChange}
             className="pl-9"
           />
         </div>
-        <Button type="submit" variant="outline">
-          Search
-        </Button>
         {query && (
           <Button variant="ghost" size="icon" asChild>
             <Link to="/shows" aria-label="Clear search">
