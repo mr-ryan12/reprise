@@ -121,11 +121,11 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T031 [P] Add loading states and error boundaries to all route modules
-- [ ] T032 [P] Verify responsive layout across all pages at 375px, 768px, and 1440px+ breakpoints
-- [ ] T033 [P] Add `prefers-reduced-motion` respect to any animations or transitions
-- [ ] T034 Run `yarn typecheck` and fix any TypeScript errors across all files
-- [ ] T035 Run full quickstart.md validation (all 6 verification steps)
+- [x] T031 [P] Add loading states and error boundaries to all route modules
+- [x] T032 [P] Verify responsive layout across all pages at 375px, 768px, and 1440px+ breakpoints
+- [x] T033 [P] Add `prefers-reduced-motion` respect to any animations or transitions
+- [x] T034 Run `yarn typecheck` and fix any TypeScript errors across all files
+- [x] T035 Run full quickstart.md validation (all 6 verification steps)
 
 ---
 
