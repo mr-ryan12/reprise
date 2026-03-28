@@ -47,6 +47,7 @@ yarn prisma studio    # Open database GUI
 
 - All data fetching MUST use React Router loaders. No `useEffect` fetch patterns for route data.
 - All mutations MUST use React Router actions via `<Form>`, `useSubmit`, or `useFetcher`.
+- All async operations in loaders and actions MUST be wrapped in `try/catch`. Catch blocks should `console.error` with context and `throw new Response(message, { status })` to surface errors through the error boundary.
 - Search uses URL query params (`/shows?q=...`), not client-side state.
 - Import from `"react-router"`, NOT `"@remix-run/node"` or `"@remix-run/react"`.
 
