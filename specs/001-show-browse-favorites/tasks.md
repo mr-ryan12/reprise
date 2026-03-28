@@ -87,11 +87,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] Implement show detail loader (show metadata + tracks with songs) in `app/routes/shows.$showDate.tsx`
-- [ ] T020 [US3] Build show detail page component with venue info and setlist grouped by set in `app/routes/shows.$showDate.tsx`
-- [ ] T021 [US3] Add back navigation link that preserves previous search/pagination state in `app/routes/shows.$showDate.tsx`
-- [ ] T022 [US3] Handle 404 for invalid show dates and empty setlist edge case in `app/routes/shows.$showDate.tsx`
-- [ ] T023 [US3] Make show list entries clickable links to detail pages in `app/routes/shows.tsx`
+- [x] T019 [US3] Implement show detail loader (show metadata + tracks with songs) in `app/routes/shows.$showDate.tsx`
+- [x] T020 [US3] Build show detail page component with venue info and setlist grouped by set in `app/routes/shows.$showDate.tsx`
+- [x] T021 [US3] Add back navigation link that preserves previous search/pagination state in `app/routes/shows.$showDate.tsx`
+- [x] T022 [US3] Handle 404 for invalid show dates and empty setlist edge case in `app/routes/shows.$showDate.tsx`
+- [x] T023 [US3] Make show list entries clickable links to detail pages in `app/routes/shows.tsx`
 
 **Checkpoint**: User Story 3 is fully functional. Fans can click into any show and see the full setlist organized by set.
 
