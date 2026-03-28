@@ -22,7 +22,7 @@ function formatShowDate(dateStr: string): string {
   return `${month}/${day}/${year}`;
 }
 
-function ProgressBar() {
+function ProgressBar({ slim = false }: { slim?: boolean }) {
   const { currentTime, duration, seek } = usePlayer();
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
@@ -45,6 +45,9 @@ function ProgressBar() {
     seek(Math.max(0, Math.min(duration, fraction * duration)));
   }
 
+  const dotSize = slim ? "size-2.5" : "size-3";
+  const dotOffset = slim ? `calc(${progress}% - 5px)` : `calc(${progress}% - 6px)`;
+
   return (
     <div
       role="slider"
@@ -53,7 +56,9 @@ function ProgressBar() {
       aria-valuemax={Math.floor(duration)}
       aria-valuenow={Math.floor(currentTime)}
       tabIndex={0}
-      className="group relative h-2 w-full cursor-pointer rounded-full bg-muted"
+      className={`group relative w-full cursor-pointer bg-muted ${
+        slim ? "h-1" : "h-2 rounded-full"
+      }`}
       onClick={handleClick}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -63,12 +68,14 @@ function ProgressBar() {
       }}
     >
       <div
-        className="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-100"
+        className={`absolute inset-y-0 left-0 bg-primary transition-[width] duration-100 ${
+          slim ? "" : "rounded-full"
+        }`}
         style={{ width: `${progress}%` }}
       />
       <div
-        className="absolute top-1/2 -translate-y-1/2 size-3 rounded-full bg-primary opacity-0 transition-opacity group-hover:opacity-100"
-        style={{ left: `calc(${progress}% - 6px)` }}
+        className={`absolute top-1/2 -translate-y-1/2 ${dotSize} rounded-full bg-primary opacity-0 transition-opacity group-hover:opacity-100`}
+        style={{ left: dotOffset }}
       />
     </div>
   );
@@ -170,45 +177,77 @@ function ExpandedPlayer() {
 }
 
 function MinimizedPlayer() {
-  const { currentTrack, isPlaying, error, togglePlayPause, expand, close } =
-    usePlayer();
+  const {
+    currentTrack,
+    isPlaying,
+    error,
+    hasNext,
+    hasPrevious,
+    currentTime,
+    togglePlayPause,
+    previous,
+    next,
+    expand,
+    close,
+  } = usePlayer();
 
   if (!currentTrack) return null;
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2">
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={togglePlayPause}
-        aria-label={isPlaying ? "Pause" : "Play"}
-      >
-        {isPlaying ? (
-          <Pause className="size-4" />
-        ) : (
-          <Play className="size-4" />
-        )}
-      </Button>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{currentTrack.songTitle}</p>
-        {error && <p className="truncate text-xs text-destructive">{error}</p>}
+    <div>
+      <ProgressBar slim />
+      <div className="flex items-center gap-1 px-3 py-1.5">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={previous}
+          disabled={!hasPrevious && currentTime < 5}
+          aria-label="Previous track"
+        >
+          <SkipBack className="size-3.5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={togglePlayPause}
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {isPlaying ? (
+            <Pause className="size-4" />
+          ) : (
+            <Play className="size-4" />
+          )}
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={next}
+          disabled={!hasNext}
+          aria-label="Next track"
+        >
+          <SkipForward className="size-3.5" />
+        </Button>
+        <div className="ml-1 min-w-0 flex-1">
+          <p className="truncate text-sm font-medium">{currentTrack.songTitle}</p>
+          {error && <p className="truncate text-xs text-destructive">{error}</p>}
+        </div>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={expand}
+          aria-label="Expand player"
+        >
+          <Maximize2 className="size-3.5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={close}
+          aria-label="Close player"
+        >
+          <X className="size-3.5" />
+        </Button>
       </div>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={expand}
-        aria-label="Expand player"
-      >
-        <Maximize2 className="size-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={close}
-        aria-label="Close player"
-      >
-        <X className="size-4" />
-      </Button>
     </div>
   );
 }
