@@ -105,13 +105,13 @@
 
 ### Implementation for User Story 4
 
-- [ ] T024 [US4] Implement login page with username form, loader (redirect if authed, read redirectTo), and action (validate, findOrCreateUser, createSession) in `app/routes/login.tsx`
-- [ ] T025 [US4] Implement logout action-only route in `app/routes/api.logout.tsx`
-- [ ] T026 [US4] Add favorite toggle action (POST with intent="favorite") to show detail page in `app/routes/shows.$showDate.tsx`
-- [ ] T027 [US4] Update show detail loader to check favorite status for authenticated users and render favorite button in `app/routes/shows.$showDate.tsx`
-- [ ] T028 [US4] Implement favorites list page with loader (requireAuth, getUserFavorites) and show cards in `app/routes/favorites.tsx`
-- [ ] T029 [US4] Add auth-aware navigation (login/logout links, username display) to root layout in `app/root.tsx`
-- [ ] T030 [US4] Optionally show favorite indicators on the shows list for authenticated users in `app/routes/shows.tsx`
+- [x] T024 [US4] Implement login page with username form, loader (redirect if authed, read redirectTo), and action (validate, findOrCreateUser, createSession) in `app/routes/login.tsx`
+- [x] T025 [US4] Implement logout action-only route in `app/routes/api.logout.tsx`
+- [x] T026 [US4] Add favorite toggle action (POST with intent="favorite") to show detail page in `app/routes/shows.$showDate.tsx`
+- [x] T027 [US4] Update show detail loader to check favorite status for authenticated users and render favorite button in `app/routes/shows.$showDate.tsx`
+- [x] T028 [US4] Implement favorites list page with loader (requireAuth, getUserFavorites) and show cards in `app/routes/favorites.tsx`
+- [x] T029 [US4] Add auth-aware navigation (login/logout links, username display) to root layout in `app/root.tsx`
+- [x] T030 [US4] Optionally show favorite indicators on the shows list for authenticated users in `app/routes/shows.tsx`
 
 **Checkpoint**: User Story 4 is fully functional. Full auth flow, favorite toggling, favorites list, and unauthenticated redirect all work.
 
