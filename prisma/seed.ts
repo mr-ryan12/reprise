@@ -91,6 +91,7 @@ async function main() {
         duration: show.duration,
         tourName: show.tour_name,
         notes: show.taper_notes,
+        albumCoverUrl: show.album_cover_url,
         venueId,
       },
       create: {
@@ -98,6 +99,7 @@ async function main() {
         duration: show.duration,
         tourName: show.tour_name,
         notes: show.taper_notes,
+        albumCoverUrl: show.album_cover_url,
         venueId,
       },
     });

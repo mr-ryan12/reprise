@@ -43,6 +43,7 @@ export interface PhishinShowSummary {
   duration: number | null;
   tour_name: string | null;
   taper_notes: string | null;
+  album_cover_url: string | null;
   venue: PhishinVenue;
 }
 
