@@ -8,7 +8,7 @@ import {
   useRouteError,
   useSubmit,
 } from "react-router";
-import { Loader2, Search, SearchX, X } from "lucide-react";
+import { Loader2, Search, SearchX } from "lucide-react";
 import { getShows, searchShows } from "~/services/show.server";
 import { getUserFavoriteShowIds } from "~/services/favorite.server";
 import { getOptionalUser } from "~/utils/auth.server";
@@ -120,17 +120,6 @@ export default function Shows() {
             className="pl-9"
           />
         </div>
-        {searchValue && (
-          <Button
-            variant="ghost"
-            size="icon"
-            type="button"
-            onClick={handleClear}
-            aria-label="Clear search"
-          >
-            <X className="size-4" />
-          </Button>
-        )}
       </Form>
 
       {query && shows.length > 0 && (
