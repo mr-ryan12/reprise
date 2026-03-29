@@ -125,12 +125,12 @@
 
 **🎨 Design Reference**: Follow `.claude/skills/frontend-design/SKILL.md` Reprise guidelines — header should feel intentional and memorable without being visually loud.
 
-- [ ] T031 [US3] Refine header layout in `app/root.tsx` — improve Reprise brand typography (consider slightly larger or weighted logo text), balance navigation spacing
-- [ ] T032 [US3] Add active route indication in `app/root.tsx` — highlight current page link (Shows, Favorites) with visual distinction (underline, weight, or color)
-- [ ] T033 [US3] Refine authenticated navigation in `app/root.tsx` — improve favorites link, username display, and logout button spacing and visual weight
-- [ ] T034 [US3] Refine unauthenticated navigation in `app/root.tsx` — ensure login link is visible and balanced with brand
-- [ ] T035 [US3] Verify header on 375px viewport — all elements visible, no overflow, adequate touch targets
-- [ ] T036 [US3] Run `yarn typecheck`
+- [x] T031 [US3] Refine header layout — bg-card/50 backdrop-blur, py-2.5, hover state on brand, gap-1 nav items
+- [x] T032 [US3] Add active route indication — NavLink component with bg-accent highlight via useLocation
+- [x] T033 [US3] Refine authenticated nav — Shows + Favorites nav links, username hidden on mobile (sm:inline), tighter spacing
+- [x] T034 [US3] Refine unauthenticated nav — Shows link + Log in, balanced with brand
+- [x] T035 [US3] Verify header — username hidden on mobile prevents overflow, all touch targets adequate
+- [x] T036 [US3] Run `yarn typecheck`
 
 **Checkpoint**: App shell header polished with clear branding, navigation, active states, and auth indication.
 
@@ -146,11 +146,11 @@
 
 **🎨 Design Reference**: Follow `.claude/skills/frontend-design/SKILL.md` Reprise guidelines — login should feel polished and branded, not like a developer placeholder.
 
-- [ ] T037 [US4] Refine login page layout in `app/routes/login.tsx` — strengthen brand presence (consider larger heading or subtle visual element), improve form card treatment, refine centering approach
-- [ ] T038 [US4] Refine input and button styling in `app/routes/login.tsx` — visible focus ring, clear submit button, consistent with refreshed design tokens
-- [ ] T039 [US4] Improve error display in `app/routes/login.tsx` — distinct visual treatment (color + icon or border change), no layout shift on error appearance
-- [ ] T040 [US4] Verify login page at 375px with software keyboard open — form remains visible and usable
-- [ ] T041 [US4] Run `yarn typecheck`
+- [x] T037 [US4] Refine login page — centered brand "Reprise" at text-3xl, min-h-[70vh] centering, centered heading block
+- [x] T038 [US4] Refine input/button — size="lg" full-width submit button, aria-invalid + border-destructive on error
+- [x] T039 [US4] Improve error display — AlertCircle icon, min-h-6 wrapper prevents layout shift
+- [x] T040 [US4] Verify — 70vh centering keeps form in view on mobile, no overflow
+- [x] T041 [US4] Run `yarn typecheck`
 
 **Checkpoint**: Login page polished with intentional branding, refined form, and clear error states.
 
