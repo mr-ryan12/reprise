@@ -37,14 +37,14 @@
 
 **Purpose**: Schema migration, seed update, and service layer changes to support album cover URLs
 
-- [ ] T001 Add `albumCoverUrl String?` field to Show model in `prisma/schema.prisma`
-- [ ] T002 Add `album_cover_url: string | null` to `PhishinShowSummary` interface in `app/services/phishin.server.ts`
-- [ ] T003 Map `album_cover_url` to `albumCoverUrl` in show upsert (both create and update blocks) in `prisma/seed.ts`
-- [ ] T004 Run `yarn prisma migrate dev --name add-album-cover-url` to generate and apply migration
-- [ ] T005 Include `albumCoverUrl` in `select` clauses for `getShows()` and `searchShows()` in `app/services/show.server.ts`
-- [ ] T006 Include `albumCoverUrl` in the return data from `getShowByDate()` in `app/services/show.server.ts`
-- [ ] T007 Re-seed database to populate `albumCoverUrl` values: `yarn prisma db seed`
-- [ ] T008 Run `yarn typecheck` to verify all type changes propagate correctly
+- [x] T001 Add `albumCoverUrl String?` field to Show model in `prisma/schema.prisma`
+- [x] T002 Add `album_cover_url: string | null` to `PhishinShowSummary` interface in `app/services/phishin.server.ts`
+- [x] T003 Map `album_cover_url` to `albumCoverUrl` in show upsert (both create and update blocks) in `prisma/seed.ts`
+- [x] T004 Run `yarn prisma migrate dev --name add-album-cover-url` to generate and apply migration
+- [x] T005 Include `albumCoverUrl` in `select` clauses for `getShows()` and `searchShows()` in `app/services/show.server.ts` (N/A — Prisma includes all scalar fields by default with `include`)
+- [x] T006 Include `albumCoverUrl` in the return data from `getShowByDate()` in `app/services/show.server.ts` (N/A — already included by default)
+- [x] T007 Re-seed database to populate `albumCoverUrl` values: backfill script (`prisma/backfill-album-covers.ts`) updated 2112 shows
+- [x] T008 Run `yarn typecheck` to verify all type changes propagate correctly
 
 **Checkpoint**: Album cover URL data flows from Phish.in API through seed, schema, service, and into loaders. `yarn typecheck` passes.
 
