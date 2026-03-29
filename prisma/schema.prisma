@@ -25,10 +25,11 @@ model Venue {
 model Show {
   id        String   @id @default(cuid())
   date      DateTime @unique @db.Date
-  duration  Int? // milliseconds
-  tourName  String?
-  notes     String? // taper_notes from API
-  venueId   String
+  duration      Int? // milliseconds
+  tourName      String?
+  notes         String? // taper_notes from API
+  albumCoverUrl String? // Phish.in album cover image URL
+  venueId       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
