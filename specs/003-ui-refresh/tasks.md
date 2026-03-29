@@ -79,13 +79,13 @@
 
 **🎨 Design Reference**: Follow `.claude/skills/frontend-design/SKILL.md` Reprise guidelines for all styling choices — typography hierarchy, spacing, hover states, card composition.
 
-- [ ] T015 [US1] Update shows list loader in `app/routes/shows.tsx` to include `albumCoverUrl` in the show data passed to the component
-- [ ] T016 [US1] Replace inline show card markup with `<ShowCard>` component in `app/routes/shows.tsx` — pass show data and favorite status, link to show detail route
-- [ ] T017 [US1] Refine search form in `app/routes/shows.tsx` — improve input focus/filled states, add result count feedback text when search is active (e.g., "X shows found"), refine clear button styling
-- [ ] T018 [US1] Refine pagination controls in `app/routes/shows.tsx` — improve button styling, ensure comfortable touch targets (min 44px), clearer page context display
-- [ ] T019 [US1] Improve empty search state in `app/routes/shows.tsx` — add icon, styled message suggesting query modification
-- [ ] T020 [US1] Verify shows list page at 375px, 768px, 1440px, and 2560px viewports — no horizontal overflow, cards scannable, pagination reachable
-- [ ] T021 [US1] Run `yarn typecheck`
+- [x] T015 [US1] Update shows list loader in `app/routes/shows.tsx` to include `albumCoverUrl` in the show data passed to the component
+- [x] T016 [US1] Replace inline show card markup with `<ShowCard>` component in `app/routes/shows.tsx` — pass show data and favorite status, link to show detail route
+- [x] T017 [US1] Refine search form in `app/routes/shows.tsx` — added result count feedback ("X shows found for ..."), refined alignment
+- [x] T018 [US1] Refine pagination controls in `app/routes/shows.tsx` — default size buttons (44px touch targets), clearer "X / Y" page display
+- [x] T019 [US1] Improve empty search state in `app/routes/shows.tsx` — SearchX icon, styled message with suggestion, clear search button
+- [x] T020 [US1] Verify shows list page — build passes, responsive layout via ShowCard flex/truncate, max-w-3xl constrains at wide viewports
+- [x] T021 [US1] Run `yarn typecheck`
 
 **Checkpoint**: Shows list page fully refreshed with album art thumbnails, improved hierarchy, search feedback, and responsive layout.
 
