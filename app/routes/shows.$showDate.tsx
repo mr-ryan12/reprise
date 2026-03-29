@@ -6,13 +6,14 @@ import {
   useLoaderData,
   useRouteError,
 } from "react-router";
-import { ArrowLeft, Calendar, Clock, Heart, MapPin } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Heart, MapPin, Music } from "lucide-react";
 import { getShowByDate } from "~/services/show.server";
 import { isShowFavorited, toggleFavorite } from "~/services/favorite.server";
 import { getOptionalUser, requireAuth } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { TrackRow } from "~/components/track-row";
+import { AlbumCover } from "~/components/album-cover";
 import type { PlayableTrack } from "~/lib/player-context";
 import type { Route } from "./+types/shows.$showDate";
 
@@ -45,6 +46,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
         tourName: show.tourName,
         duration: show.duration,
         notes: show.notes,
+        albumCoverUrl: show.albumCoverUrl,
         venue: show.venue,
       },
       sets: Array.from(tracksBySet.entries()).map(([setName, tracks]) => ({
@@ -111,67 +113,88 @@ export default function ShowDetail() {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <Link
         to="/shows"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" />
-        Back to shows
+        Shows
       </Link>
 
-      <div className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            {formatDate(show.date)}
-          </h1>
-          <div className="mt-2 flex flex-col gap-1 text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <MapPin className="size-4 shrink-0" />
-              <span>
-                {show.venue.name} &middot; {show.venue.city}, {show.venue.state}
-                {show.venue.country !== "USA" && `, ${show.venue.country}`}
-              </span>
-            </div>
+      <div className="mb-8 flex gap-5">
+        <AlbumCover
+          src={show.albumCoverUrl}
+          alt={`${formatDate(show.date)} album cover`}
+          size="lg"
+          className="hidden sm:block"
+        />
+        <AlbumCover
+          src={show.albumCoverUrl}
+          alt={`${formatDate(show.date)} album cover`}
+          size="md"
+          className="sm:hidden"
+        />
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+              {formatDate(show.date)}
+            </h1>
+            <Form method="post" className="shrink-0">
+              <input type="hidden" name="intent" value="favorite" />
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon"
+                className="transition-colors"
+                aria-label={
+                  isFavorited ? "Remove from favorites" : "Add to favorites"
+                }
+              >
+                <Heart
+                  className={`size-5 transition-colors ${
+                    isFavorited
+                      ? "fill-red-500 text-red-500"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                />
+              </Button>
+            </Form>
+          </div>
+
+          <p className="mt-1.5 text-base font-medium text-foreground/80">
+            {show.venue.name}
+          </p>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {show.venue.city}, {show.venue.state}
+            {show.venue.country !== "USA" && `, ${show.venue.country}`}
+          </p>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
             {show.tourName && (
-              <div className="flex items-center gap-2">
-                <Calendar className="size-4 shrink-0" />
-                <span>{show.tourName}</span>
-              </div>
+              <span className="flex items-center gap-1.5">
+                <Calendar className="size-3.5 shrink-0" />
+                {show.tourName}
+              </span>
             )}
             {show.duration && (
-              <div className="flex items-center gap-2">
-                <Clock className="size-4 shrink-0" />
-                <span>{formatDuration(show.duration)}</span>
-              </div>
+              <span className="flex items-center gap-1.5">
+                <Clock className="size-3.5 shrink-0" />
+                {formatDuration(show.duration)}
+              </span>
             )}
           </div>
         </div>
-
-        <Form method="post">
-          <input type="hidden" name="intent" value="favorite" />
-          <Button
-            type="submit"
-            variant="ghost"
-            size="icon"
-            aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
-          >
-            <Heart
-              className={
-                isFavorited
-                  ? "size-5 fill-red-500 text-red-500"
-                  : "size-5 text-muted-foreground"
-              }
-            />
-          </Button>
-        </Form>
       </div>
 
       {sets.length === 0 ? (
-        <div className="rounded-lg border border-border bg-card px-4 py-12 text-center">
-          <p className="text-muted-foreground">
-            Setlist is not yet available for this show.
+        <div className="rounded-lg border border-border bg-card px-6 py-16 text-center">
+          <Music className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+          <p className="font-medium text-foreground">No setlist available</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            The setlist for this show hasn&apos;t been added yet.
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-8">
           {sets.map((set) => {
             const setTracks: PlayableTrack[] = set.tracks
               .filter((t) => t.mp3Url)
@@ -187,8 +210,10 @@ export default function ShowDetail() {
 
             return (
               <div key={set.name}>
-                <h2 className="mb-3 text-lg font-semibold">{set.name}</h2>
-                <div className="rounded-lg border border-border bg-card">
+                <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                  {set.name}
+                </h2>
+                <div className="overflow-hidden rounded-lg border border-border bg-card">
                   {set.tracks.map((track, i) => (
                     <div key={track.id}>
                       {i > 0 && <Separator />}
@@ -225,19 +250,25 @@ export function ErrorBoundary() {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <Link
         to="/shows"
-        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" />
-        Back to shows
+        Shows
       </Link>
-      <h1 className="mb-4 text-2xl font-bold">
-        {is404 ? "Show Not Found" : "Error"}
-      </h1>
-      <p className="text-muted-foreground">
-        {is404
-          ? "We couldn't find a show for that date."
-          : "Something went wrong loading this show."}
-      </p>
+      <div className="rounded-lg border border-border bg-card px-6 py-16 text-center">
+        <Music className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+        <h1 className="text-lg font-semibold">
+          {is404 ? "Show not found" : "Something went wrong"}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {is404
+            ? "We couldn't find a show for that date."
+            : "Something went wrong loading this show."}
+        </p>
+        <Button variant="outline" size="sm" asChild className="mt-4">
+          <Link to="/shows">Browse shows</Link>
+        </Button>
+      </div>
     </div>
   );
 }

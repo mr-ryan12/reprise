@@ -73,14 +73,14 @@ export function TrackRow({
           handleClick();
         }
       }}
-      className={`flex items-center justify-between px-4 py-2.5 ${
+      className={`flex items-center justify-between gap-3 px-4 py-3 ${
         isPlayable
           ? "cursor-pointer transition-colors hover:bg-accent/50"
           : ""
-      } ${isCurrentTrack ? "bg-accent/30" : ""}`}
+      } ${isCurrentTrack ? "bg-accent/40" : ""}`}
     >
-      <div className="flex items-center gap-3">
-        <span className="flex w-6 items-center justify-center text-right text-xs text-muted-foreground">
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="flex w-6 shrink-0 items-center justify-center text-xs tabular-nums text-muted-foreground">
           {isCurrentTrack && isPlaying ? (
             <span className="equalizer flex items-end gap-0.5" aria-label="Playing">
               <span className="equalizer-bar h-2.5 w-0.75 rounded-sm bg-primary" />
@@ -98,17 +98,19 @@ export function TrackRow({
             track.position
           )}
         </span>
-        <span className={`font-medium ${isCurrentTrack ? "text-primary" : ""}`}>
+        <span
+          className={`truncate font-medium ${isCurrentTrack ? "text-primary" : ""}`}
+        >
           {track.song.title}
         </span>
         {!track.song.original && track.song.artist && (
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="shrink-0 text-xs">
             {track.song.artist}
           </Badge>
         )}
       </div>
       {track.duration && (
-        <span className="text-sm text-muted-foreground">
+        <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
           {formatDuration(track.duration)}
         </span>
       )}

@@ -175,7 +175,7 @@ export default function Shows() {
               Previous
             </Link>
           </Button>
-          <span className="min-w-[5rem] text-center text-sm text-muted-foreground">
+          <span className="min-w-20 text-center text-sm text-muted-foreground">
             {currentPage} / {totalPages}
           </span>
           <Button
