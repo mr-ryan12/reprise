@@ -20,6 +20,23 @@ import { usePlayer } from "~/lib/player-context";
 import type { Route } from "./+types/root";
 import "./app.css";
 
+export function meta(): Route.MetaDescriptors {
+  return [
+    { title: "Reprise" },
+    { name: "description", content: "Discover and explore Phish shows, setlists, and recordings." },
+    { property: "og:title", content: "Reprise" },
+    { property: "og:description", content: "Discover and explore Phish shows, setlists, and recordings." },
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: "https://reprise.dev" },
+    { property: "og:image", content: "https://reprise.dev/og-image.png" },
+    { property: "og:site_name", content: "Reprise" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "Reprise" },
+    { name: "twitter:description", content: "Discover and explore Phish shows, setlists, and recordings." },
+    { name: "twitter:image", content: "https://reprise.dev/og-image.png" },
+  ];
+}
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {

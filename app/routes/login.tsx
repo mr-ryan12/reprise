@@ -7,6 +7,7 @@ import {
 } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { mergeMeta } from "~/lib/meta";
 import type { Route } from "./+types/login";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -84,6 +85,10 @@ export default function Login() {
   );
 }
 
-export function meta() {
-  return [{ title: "Log In | Reprise" }];
+export function meta({ matches }: Route.MetaArgs) {
+  const parentMeta = matches.flatMap((match) => match?.meta ?? []);
+  return mergeMeta(parentMeta, [
+    { title: "Log In | Reprise" },
+    { property: "og:title", content: "Log In | Reprise" },
+  ]);
 }
