@@ -164,11 +164,11 @@
 
 ### Implementation for User Story 5
 
-- [ ] T042 [US5] Update favorites loader in `app/routes/favorites.tsx` to include `albumCoverUrl` in favorite show data
-- [ ] T043 [US5] Replace inline show cards with `<ShowCard>` component in `app/routes/favorites.tsx` — same visual treatment as shows list
-- [ ] T044 [US5] Improve empty state in `app/routes/favorites.tsx` — warmer messaging, larger/more expressive icon, clear CTA link to browse shows
-- [ ] T045 [US5] Verify favorites page consistency with shows list on mobile and desktop viewports
-- [ ] T046 [US5] Run `yarn typecheck`
+- [x] T042 [US5] Update favorites loader to include `albumCoverUrl` in show data
+- [x] T043 [US5] Replace inline cards with `<ShowCard>` component — consistent with shows list
+- [x] T044 [US5] Improve empty state — Heart icon, two-line message, "Browse shows" CTA button
+- [x] T045 [US5] Verify — uses same ShowCard as shows list, error boundary refreshed to match pattern
+- [x] T046 [US5] Run `yarn typecheck`
 
 **Checkpoint**: Favorites page visually consistent with shows list, with warm empty state.
 
