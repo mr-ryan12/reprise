@@ -6,7 +6,7 @@ import {
   useLoaderData,
   useRouteError,
 } from "react-router";
-import { ArrowLeft, Calendar, Clock, Heart, MapPin, Music } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Heart, Music } from "lucide-react";
 import { getShowByDate } from "~/services/show.server";
 import { isShowFavorited, toggleFavorite } from "~/services/favorite.server";
 import { getOptionalUser, requireAuth } from "~/utils/auth.server";

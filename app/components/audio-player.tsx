@@ -103,44 +103,47 @@ function ExpandedPlayer() {
     <div className="px-4 py-3">
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{currentTrack.songTitle}</p>
+          <p className="truncate text-sm font-semibold leading-snug tracking-tight">
+            {currentTrack.songTitle}
+          </p>
           <p className="truncate text-xs text-muted-foreground">
-            {formatShowDate(currentTrack.showDate)} &middot; {currentTrack.venueName}
+            {formatShowDate(currentTrack.showDate)} &middot;{" "}
+            {currentTrack.venueName}
           </p>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
             size="icon-sm"
             onClick={minimize}
             aria-label="Minimize player"
+            className="text-muted-foreground hover:text-foreground"
           >
-            <Minimize2 className="size-4" />
+            <Minimize2 className="size-3.5" />
           </Button>
           <Button
             variant="ghost"
             size="icon-sm"
             onClick={close}
             aria-label="Close player"
+            className="text-muted-foreground hover:text-foreground"
           >
-            <X className="size-4" />
+            <X className="size-3.5" />
           </Button>
         </div>
       </div>
 
-      {error && (
-        <p className="mt-1 text-xs text-destructive">{error}</p>
-      )}
+      {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
 
-      <div className="mt-2">
+      <div className="mt-2.5">
         <ProgressBar />
-        <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+        <div className="mt-1 flex items-center justify-between text-xs tabular-nums text-muted-foreground">
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
       </div>
 
-      <div className="mt-1 flex items-center justify-center gap-2">
+      <div className="mt-1 flex items-center justify-center gap-3">
         <Button
           variant="ghost"
           size="icon-sm"
@@ -155,6 +158,7 @@ function ExpandedPlayer() {
           size="icon"
           onClick={togglePlayPause}
           aria-label={isPlaying ? "Pause" : "Play"}
+          className="transition-colors"
         >
           {isPlaying ? (
             <Pause className="size-5" />
@@ -196,7 +200,7 @@ function MinimizedPlayer() {
   return (
     <div>
       <ProgressBar slim />
-      <div className="flex items-center gap-1 px-3 py-1.5">
+      <div className="flex items-center gap-1.5 px-3 py-1.5">
         <Button
           variant="ghost"
           size="icon-sm"
@@ -211,6 +215,7 @@ function MinimizedPlayer() {
           size="icon-sm"
           onClick={togglePlayPause}
           aria-label={isPlaying ? "Pause" : "Play"}
+          className="transition-colors"
         >
           {isPlaying ? (
             <Pause className="size-4" />
@@ -228,14 +233,19 @@ function MinimizedPlayer() {
           <SkipForward className="size-3.5" />
         </Button>
         <div className="ml-1 min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{currentTrack.songTitle}</p>
-          {error && <p className="truncate text-xs text-destructive">{error}</p>}
+          <p className="truncate text-sm font-semibold leading-snug tracking-tight">
+            {currentTrack.songTitle}
+          </p>
+          {error && (
+            <p className="truncate text-xs text-destructive">{error}</p>
+          )}
         </div>
         <Button
           variant="ghost"
           size="icon-sm"
           onClick={expand}
           aria-label="Expand player"
+          className="text-muted-foreground hover:text-foreground"
         >
           <Maximize2 className="size-3.5" />
         </Button>
@@ -244,6 +254,7 @@ function MinimizedPlayer() {
           size="icon-sm"
           onClick={close}
           aria-label="Close player"
+          className="text-muted-foreground hover:text-foreground"
         >
           <X className="size-3.5" />
         </Button>
@@ -258,7 +269,7 @@ export function AudioPlayer() {
   if (!currentTrack) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 shadow-lg backdrop-blur-sm">
       <div className="mx-auto max-w-3xl">
         <div className="hidden sm:block">
           {isMinimized ? <MinimizedPlayer /> : <ExpandedPlayer />}
