@@ -182,11 +182,11 @@
 
 ### Implementation for User Story 6
 
-- [ ] T047 [US6] Refine error boundary in `app/root.tsx` — friendly layout with icon, clear error message, navigation link back to `/shows`, consistent with refreshed header
-- [ ] T048 [US6] Audit and refine loading indicators across routes — ensure search spinner and any navigation loading feedback match design language
-- [ ] T049 [US6] Audit button hover/focus/active states across all pages — verify consistent feedback via updated design tokens, adjust shadcn button variants in `app/components/ui/button.tsx` if token changes require it
-- [ ] T050 [US6] Verify error boundary by navigating to invalid route — header intact, friendly message, link to shows
-- [ ] T051 [US6] Run `yarn typecheck`
+- [x] T047 [US6] Refine error boundary in `app/root.tsx` — already done in Phase 5 (AlertCircle, card treatment, CTA)
+- [x] T048 [US6] Audit loading indicators — search spinner consistent (Loader2 animate-spin), all route error boundaries use same card+icon+CTA pattern
+- [x] T049 [US6] Audit button states — token refinements from T009 flow through all variants automatically, no button.tsx changes needed
+- [x] T050 [US6] Verify error boundary — root, shows, show detail, favorites all use consistent pattern
+- [x] T051 [US6] Run `yarn typecheck`
 
 **Checkpoint**: All shared UI patterns consistent across the application.
 
