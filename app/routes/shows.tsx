@@ -8,12 +8,13 @@ import {
   useRouteError,
   useSubmit,
 } from "react-router";
-import { Calendar, Heart, Loader2, MapPin, Search, X } from "lucide-react";
+import { Loader2, Search, SearchX, X } from "lucide-react";
 import { getShows, searchShows } from "~/services/show.server";
 import { getUserFavoriteShowIds } from "~/services/favorite.server";
 import { getOptionalUser } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { ShowCard } from "~/components/show-card";
 import type { Route } from "./+types/shows";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -37,6 +38,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         date: show.date.toISOString().split("T")[0],
         tourName: show.tourName,
         venue: show.venue,
+        albumCoverUrl: show.albumCoverUrl,
         isFavorited: favoriteShowIds.has(show.id),
       })),
       totalPages: result.totalPages,
@@ -47,17 +49,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     console.error("Failed to load shows:", error);
     throw new Response("Failed to load shows", { status: 500 });
   }
-}
-
-function formatDate(dateString: string) {
-  const [year, month, day] = dateString.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
 }
 
 function paginationHref(page: number, query: string) {
@@ -100,7 +91,7 @@ export default function Shows() {
         ref={formRef}
         method="get"
         action="/shows"
-        className="mb-6 flex gap-2"
+        className="mb-6 flex items-center gap-2"
       >
         <div className="relative flex-1">
           {isSearching ? (
@@ -126,47 +117,51 @@ export default function Shows() {
         )}
       </Form>
 
+      {query && shows.length > 0 && (
+        <p className="mb-4 text-sm text-muted-foreground">
+          {shows.length === 25 ? "25+" : shows.length} show
+          {shows.length !== 1 ? "s" : ""} found for &ldquo;{query}&rdquo;
+        </p>
+      )}
+
       {shows.length === 0 ? (
-        <div className="rounded-lg border border-border bg-card px-4 py-12 text-center">
-          <p className="text-muted-foreground">
-            {query ? `No shows found for "${query}"` : "No shows available."}
+        <div className="rounded-lg border border-border bg-card px-6 py-16 text-center">
+          <SearchX className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+          <p className="font-medium text-foreground">
+            {query ? "No shows found" : "No shows available"}
           </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {query
+              ? `Try a different search term or check the spelling of "${query}".`
+              : "Check back later for show listings."}
+          </p>
+          {query && (
+            <Button variant="outline" size="sm" asChild className="mt-4">
+              <Link to="/shows">Clear search</Link>
+            </Button>
+          )}
         </div>
       ) : (
         <div className="flex flex-col gap-2">
           {shows.map((show) => (
-            <Link
+            <ShowCard
               key={show.id}
-              to={`/shows/${show.date}`}
-              className="group flex flex-col gap-1 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:bg-muted sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="flex items-center gap-2 font-medium">
-                <Calendar className="size-4 shrink-0 text-muted-foreground" />
-                <span>{formatDate(show.date)}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground sm:text-right">
-                <MapPin className="size-4 shrink-0 sm:hidden" />
-                <span>
-                  {show.venue.name} &middot; {show.venue.city},{" "}
-                  {show.venue.state}
-                </span>
-                {show.isFavorited && (
-                  <Heart className="size-3.5 shrink-0 fill-red-500 text-red-500" />
-                )}
-              </div>
-            </Link>
+              show={show}
+              isFavorited={show.isFavorited}
+              linkTo={`/shows/${show.date}`}
+            />
           ))}
         </div>
       )}
 
       {totalPages > 1 && (
         <nav
-          className="mt-8 flex items-center justify-center gap-2"
+          className="mt-8 flex items-center justify-center gap-3"
           aria-label="Pagination"
         >
           <Button
             variant="outline"
-            size="sm"
+            size="default"
             asChild
             disabled={currentPage <= 1}
           >
@@ -180,12 +175,12 @@ export default function Shows() {
               Previous
             </Link>
           </Button>
-          <span className="px-3 text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
+          <span className="min-w-[5rem] text-center text-sm text-muted-foreground">
+            {currentPage} / {totalPages}
           </span>
           <Button
             variant="outline"
-            size="sm"
+            size="default"
             asChild
             disabled={currentPage >= totalPages}
           >
@@ -219,11 +214,14 @@ export function ErrorBoundary() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-4 text-2xl font-bold">Error</h1>
-      <p className="text-muted-foreground">{message}</p>
-      <Link to="/shows" className="mt-4 inline-block text-sm underline">
-        Try again
-      </Link>
+      <div className="rounded-lg border border-border bg-card px-6 py-16 text-center">
+        <SearchX className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+        <h1 className="text-lg font-semibold">Something went wrong</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{message}</p>
+        <Button variant="outline" size="sm" asChild className="mt-4">
+          <Link to="/shows">Try again</Link>
+        </Button>
+      </div>
     </div>
   );
 }
