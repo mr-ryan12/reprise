@@ -11,6 +11,7 @@ import {
   useLocation,
 } from "react-router";
 import { AlertCircle, Heart, LogOut } from "lucide-react";
+import { ThemeToggle } from "~/components/theme-toggle";
 import { prisma } from "~/lib/db.server";
 import { getOptionalUser } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
@@ -56,6 +57,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`,
+          }}
+        />
       </head>
       <body>
         {children}
@@ -112,6 +118,7 @@ export default function App() {
                 <span className="ml-2 hidden text-sm text-muted-foreground sm:inline">
                   {user.username}
                 </span>
+                <ThemeToggle />
                 <Form method="post" action="/api/logout">
                   <Button
                     variant="ghost"
@@ -126,6 +133,7 @@ export default function App() {
             ) : (
               <>
                 <NavLink to="/shows">Shows</NavLink>
+                <ThemeToggle />
                 <Button variant="ghost" size="sm" asChild>
                   <Link to="/login">Log in</Link>
                 </Button>

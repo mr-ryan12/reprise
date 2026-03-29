@@ -119,7 +119,7 @@ export default function ShowDetail() {
         Shows
       </Link>
 
-      <div className="mb-8 flex gap-5">
+      <div className="show-detail-gradient -mx-4 mb-8 flex gap-5 rounded-xl px-4 py-5">
         <AlbumCover
           src={show.albumCoverUrl}
           alt={`${formatDate(show.date)} album cover`}
