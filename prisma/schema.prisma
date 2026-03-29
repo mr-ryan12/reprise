@@ -25,10 +25,11 @@ model Venue {
 model Show {
   id        String   @id @default(cuid())
   date      DateTime @unique @db.Date
-  duration  Int? // milliseconds
-  tourName  String?
-  notes     String? // taper_notes from API
-  venueId   String
+  duration      Int? // milliseconds
+  tourName      String?
+  notes         String? // taper_notes from API
+  albumCoverUrl String? // Phish.in album cover image URL
+  venueId       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -63,8 +64,9 @@ model Track {
   duration Int?    // milliseconds
   mp3Url   String? // Phish.in audio stream URL
 
-  show Show @relation(fields: [showId], references: [id], onDelete: Cascade)
-  song Song @relation(fields: [songId], references: [id])
+  show           Show            @relation(fields: [showId], references: [id], onDelete: Cascade)
+  song           Song            @relation(fields: [songId], references: [id])
+  trackFavorites TrackFavorite[]
 
   @@unique([showId, position])
   @@index([showId])
@@ -76,7 +78,8 @@ model User {
   username  String   @unique
   createdAt DateTime @default(now())
 
-  favorites Favorite[]
+  favorites      Favorite[]
+  trackFavorites TrackFavorite[]
 }
 
 model Favorite {
@@ -91,4 +94,18 @@ model Favorite {
   @@unique([userId, showId])
   @@index([userId])
   @@index([showId])
+}
+
+model TrackFavorite {
+  id        String   @id @default(cuid())
+  userId    String
+  trackId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, trackId])
+  @@index([userId])
+  @@index([trackId])
 }

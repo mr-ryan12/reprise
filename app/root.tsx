@@ -8,8 +8,10 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useLocation,
 } from "react-router";
-import { Heart, LogOut } from "lucide-react";
+import { AlertCircle, Heart, LogOut } from "lucide-react";
+import { ThemeToggle } from "~/components/theme-toggle";
 import { prisma } from "~/lib/db.server";
 import { getOptionalUser } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
@@ -55,6 +57,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})()`,
+          }}
+        />
       </head>
       <body>
         {children}
@@ -65,38 +72,72 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+function NavLink({
+  to,
+  children,
+}: {
+  to: string;
+  children: React.ReactNode;
+}) {
+  const { pathname } = useLocation();
+  const isActive = pathname.startsWith(to);
+
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      asChild
+      className={isActive ? "bg-accent text-accent-foreground" : ""}
+    >
+      <Link to={to}>{children}</Link>
+    </Button>
+  );
+}
+
 export default function App() {
   const { user } = useLoaderData<typeof loader>();
 
   return (
     <PlayerProvider>
-      <header className="border-b border-border">
-        <nav className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <Link to="/shows" className="text-lg font-bold tracking-tight">
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
+        <nav className="mx-auto flex max-w-3xl items-center justify-between px-4 py-2.5">
+          <Link
+            to="/shows"
+            className="text-lg font-bold tracking-tight transition-colors hover:text-foreground/80"
+          >
             Reprise
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {user ? (
               <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/favorites">
-                    <Heart className="size-4" />
-                    Favorites
-                  </Link>
-                </Button>
-                <span className="text-sm text-muted-foreground">
+                <NavLink to="/shows">Shows</NavLink>
+                <NavLink to="/favorites">
+                  <Heart className="size-3.5" />
+                  Favorites
+                </NavLink>
+                <span className="ml-2 hidden text-sm text-muted-foreground sm:inline">
                   {user.username}
                 </span>
+                <ThemeToggle />
                 <Form method="post" action="/api/logout">
-                  <Button variant="ghost" size="icon-sm" aria-label="Log out">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="Log out"
+                    className="ml-1"
+                  >
                     <LogOut className="size-4" />
                   </Button>
                 </Form>
               </>
             ) : (
-              <Button variant="ghost" size="sm" asChild>
-                <Link to="/login">Log in</Link>
-              </Button>
+              <>
+                <NavLink to="/shows">Shows</NavLink>
+                <ThemeToggle />
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/login">Log in</Link>
+                </Button>
+              </>
             )}
           </div>
         </nav>
@@ -125,7 +166,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
+    message = error.status === 404 ? "Page not found" : "Something went wrong";
     details =
       error.status === 404
         ? "The requested page could not be found."
@@ -136,11 +177,17 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="mx-auto max-w-3xl px-4 py-16">
+      <div className="rounded-lg border border-border bg-card px-6 py-16 text-center">
+        <AlertCircle className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+        <h1 className="text-lg font-semibold">{message}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{details}</p>
+        <Button variant="outline" size="sm" asChild className="mt-4">
+          <Link to="/shows">Go to shows</Link>
+        </Button>
+      </div>
       {stack && (
-        <pre className="w-full p-4 overflow-x-auto">
+        <pre className="mt-8 w-full overflow-x-auto rounded-lg bg-muted p-4 text-xs">
           <code>{stack}</code>
         </pre>
       )}

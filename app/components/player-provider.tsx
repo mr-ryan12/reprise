@@ -45,9 +45,10 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       setQueue(newQueue);
       const index = newQueue.findIndex((t) => t.id === track.id);
       playTrackAtIndex(index >= 0 ? index : 0, newQueue);
-      setIsMinimized(false);
+      // Only expand if the player isn't already open
+      setIsMinimized((prev) => (currentTrack ? prev : false));
     },
-    [playTrackAtIndex]
+    [playTrackAtIndex, currentTrack]
   );
 
   const pause = useCallback(() => {

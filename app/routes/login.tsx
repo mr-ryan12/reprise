@@ -1,4 +1,5 @@
 import { Form, redirect, useActionData, useSearchParams } from "react-router";
+import { AlertCircle } from "lucide-react";
 import {
   createUserSession,
   findOrCreateUser,
@@ -43,14 +44,14 @@ export default function Login() {
   const redirectTo = searchParams.get("redirectTo") ?? "/shows";
 
   return (
-    <div className="mx-auto flex min-h-[60vh] max-w-sm flex-col items-center justify-center px-4">
+    <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col items-center justify-center px-4">
       <div className="w-full">
-        <h1 className="mb-2 text-2xl font-bold tracking-tight">
-          Welcome to Reprise
-        </h1>
-        <p className="mb-6 text-sm text-muted-foreground">
-          Enter a username to get started. No password needed.
-        </p>
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold tracking-tight">Reprise</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Enter a username to get started. No password needed.
+          </p>
+        </div>
 
         <Form method="post" className="flex flex-col gap-4">
           <input type="hidden" name="redirectTo" value={redirectTo} />
@@ -62,14 +63,21 @@ export default function Login() {
               autoComplete="username"
               autoFocus
               required
+              aria-invalid={actionData?.error ? true : undefined}
+              className={actionData?.error ? "border-destructive" : ""}
             />
-            {actionData?.error && (
-              <p className="mt-1.5 text-sm text-destructive">
-                {actionData.error}
-              </p>
-            )}
+            <div className="min-h-6 mt-1.5">
+              {actionData?.error && (
+                <p className="flex items-center gap-1.5 text-sm text-destructive">
+                  <AlertCircle className="size-3.5 shrink-0" />
+                  {actionData.error}
+                </p>
+              )}
+            </div>
           </div>
-          <Button type="submit">Log in</Button>
+          <Button type="submit" size="lg" className="w-full">
+            Log in
+          </Button>
         </Form>
       </div>
     </div>

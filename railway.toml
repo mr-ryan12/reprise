@@ -1,0 +1,9 @@
+[deploy]
+startCommand = "yarn start"
+
+[deploy.healthcheck]
+path = "/"
+timeout = 300
+
+[predeploy]
+startCommand = "yarn migrate:latest"
