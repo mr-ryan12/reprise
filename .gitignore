@@ -11,3 +11,6 @@
 
 # Prisma generated client
 /generated/
+
+# Database dumps
+*.sql
