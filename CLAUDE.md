@@ -124,3 +124,10 @@ Secrets MUST NOT be committed. See `.env.example` for template.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
+
+## Active Technologies
+- TypeScript 5.x, strict mode + React Router v7 (framework mode), Tailwind CSS v4, shadcn/ui, Radix primitives, lucide-react, class-variance-authority (003-ui-refresh)
+- PostgreSQL via Prisma ORM (one additive migration: `albumCoverUrl String?` on Show) (003-ui-refresh)
+
+## Recent Changes
+- 003-ui-refresh: Added TypeScript 5.x, strict mode + React Router v7 (framework mode), Tailwind CSS v4, shadcn/ui, Radix primitives, lucide-react, class-variance-authority
