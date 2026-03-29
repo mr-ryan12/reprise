@@ -1,4 +1,4 @@
-import { useFetcher } from "react-router";
+import { useFetcher, useNavigate } from "react-router";
 import { Heart, Pause, Play } from "lucide-react";
 import { usePlayer, type PlayableTrack } from "~/lib/player-context";
 import { Badge } from "~/components/ui/badge";
@@ -41,6 +41,7 @@ export function TrackRow({
 }: TrackRowProps) {
   const { currentTrack, isPlaying, play, pause, resume } = usePlayer();
   const fetcher = useFetcher();
+  const navigate = useNavigate();
 
   // Optimistic: if fetcher is submitting, toggle from current state
   const optimisticFavorited =
@@ -125,28 +126,30 @@ export function TrackRow({
             {formatDuration(track.duration)}
           </span>
         )}
-        {isLoggedIn && (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              fetcher.submit(
-                { intent: "track-favorite", trackId: track.id },
-                { method: "post" },
-              );
-            }}
-            className="flex size-7 items-center justify-center rounded-md transition-colors hover:bg-accent"
-            aria-label={optimisticFavorited ? "Remove from favorites" : "Add to favorites"}
-          >
-            <Heart
-              className={`size-3.5 transition-colors ${
-                optimisticFavorited
-                  ? "fill-red-500 text-red-500"
-                  : "text-muted-foreground/50 hover:text-foreground"
-              }`}
-            />
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!isLoggedIn) {
+              navigate(`/login?redirectTo=/shows/${showDate}`);
+              return;
+            }
+            fetcher.submit(
+              { intent: "track-favorite", trackId: track.id },
+              { method: "post" },
+            );
+          }}
+          className="flex size-7 items-center justify-center rounded-md transition-colors hover:bg-accent"
+          aria-label={optimisticFavorited ? "Remove from favorites" : "Add to favorites"}
+        >
+          <Heart
+            className={`size-3.5 transition-colors ${
+              optimisticFavorited
+                ? "fill-red-500 text-red-500"
+                : "text-muted-foreground/50 hover:text-foreground"
+            }`}
+          />
+        </button>
       </div>
     </div>
   );
