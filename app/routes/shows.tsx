@@ -114,7 +114,7 @@ export default function Shows() {
           <Input
             type="search"
             name="q"
-            placeholder="Search by date, venue, or city..."
+            placeholder="Search by song, venue, date, or city..."
             value={searchValue}
             onChange={handleChange}
             className="pl-9"

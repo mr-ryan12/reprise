@@ -271,12 +271,7 @@ export function AudioPlayer() {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 shadow-lg backdrop-blur-sm">
       <div className="mx-auto max-w-3xl">
-        <div className="hidden sm:block">
-          {isMinimized ? <MinimizedPlayer /> : <ExpandedPlayer />}
-        </div>
-        <div className="sm:hidden">
-          <MinimizedPlayer />
-        </div>
+        {isMinimized ? <MinimizedPlayer /> : <ExpandedPlayer />}
       </div>
     </div>
   );
