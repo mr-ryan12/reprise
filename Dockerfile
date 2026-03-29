@@ -4,8 +4,7 @@ WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable
 COPY prisma ./prisma
-COPY prisma.config.ts ./
-RUN yarn prisma generate
+RUN npx prisma generate --schema=prisma/schema.prisma
 COPY . .
 RUN yarn build
 
@@ -16,8 +15,7 @@ COPY package.json yarn.lock .yarnrc.yml ./
 ENV NODE_ENV=production
 RUN yarn install --immutable
 COPY prisma ./prisma
-COPY prisma.config.ts ./
-RUN yarn prisma generate
+RUN npx prisma generate --schema=prisma/schema.prisma
 COPY --from=build /app/build ./build
 EXPOSE 3000
 CMD ["yarn", "start"]
