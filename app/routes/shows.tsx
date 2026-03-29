@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Form,
   isRouteErrorResponse,
@@ -65,18 +65,30 @@ export default function Shows() {
   const navigation = useNavigation();
   const formRef = useRef<HTMLFormElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [searchValue, setSearchValue] = useState(query);
 
   const isSearching =
     navigation.state === "loading" &&
     new URLSearchParams(navigation.location?.search).has("q");
 
-  const handleChange = useCallback(() => {
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchValue(value);
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        if (formRef.current) {
+          submit(formRef.current, { replace: true });
+        }
+      }, 300);
+    },
+    [submit],
+  );
+
+  const handleClear = useCallback(() => {
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      if (formRef.current) {
-        submit(formRef.current, { replace: true });
-      }
-    }, 300);
+    setSearchValue("");
+    submit(null, { action: "/shows", replace: true });
   }, [submit]);
 
   useEffect(() => {
@@ -103,16 +115,20 @@ export default function Shows() {
             type="search"
             name="q"
             placeholder="Search by date, venue, or city..."
-            defaultValue={query}
+            value={searchValue}
             onChange={handleChange}
             className="pl-9"
           />
         </div>
-        {query && (
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/shows" aria-label="Clear search">
-              <X className="size-4" />
-            </Link>
+        {searchValue && (
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={handleClear}
+            aria-label="Clear search"
+          >
+            <X className="size-4" />
           </Button>
         )}
       </Form>
@@ -136,8 +152,14 @@ export default function Shows() {
               : "Check back later for show listings."}
           </p>
           {query && (
-            <Button variant="outline" size="sm" asChild className="mt-4">
-              <Link to="/shows">Clear search</Link>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={handleClear}
+              className="mt-4"
+            >
+              Clear search
             </Button>
           )}
         </div>
