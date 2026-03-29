@@ -20,6 +20,7 @@ import { Separator } from "~/components/ui/separator";
 import { TrackRow } from "~/components/track-row";
 import { AlbumCover } from "~/components/album-cover";
 import type { PlayableTrack } from "~/lib/player-context";
+import { mergeMeta } from "~/lib/meta";
 import type { Route } from "./+types/shows.$showDate";
 
 export async function loader({ params, request }: Route.LoaderArgs) {
@@ -254,9 +255,17 @@ export default function ShowDetail() {
   );
 }
 
-export function meta({ data }: Route.MetaArgs) {
-  if (!data?.show) return [{ title: "Show Not Found | Reprise" }];
-  return [{ title: `${data.show.date} - ${data.show.venue.name} | Reprise` }];
+export function meta({ data, matches }: Route.MetaArgs) {
+  const parentMeta = matches.flatMap((match) => match?.meta ?? []);
+  if (!data?.show) {
+    return mergeMeta(parentMeta, [{ title: "Show Not Found | Reprise" }]);
+  }
+  const title = `${data.show.date} - ${data.show.venue.name} | Reprise`;
+  return mergeMeta(parentMeta, [
+    { title },
+    { property: "og:title", content: title },
+    { property: "og:url", content: `https://reprise.dev/shows/${data.show.date}` },
+  ]);
 }
 
 export function ErrorBoundary() {

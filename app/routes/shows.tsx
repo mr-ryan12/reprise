@@ -15,6 +15,7 @@ import { getOptionalUser } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { ShowCard } from "~/components/show-card";
+import { mergeMeta } from "~/lib/meta";
 import type { Route } from "./+types/shows";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -213,8 +214,12 @@ export default function Shows() {
   );
 }
 
-export function meta() {
-  return [{ title: "Shows | Reprise" }];
+export function meta({ matches }: Route.MetaArgs) {
+  const parentMeta = matches.flatMap((match) => match?.meta ?? []);
+  return mergeMeta(parentMeta, [
+    { title: "Shows | Reprise" },
+    { property: "og:title", content: "Shows | Reprise" },
+  ]);
 }
 
 export function ErrorBoundary() {

@@ -17,6 +17,7 @@ import { requireAuth } from "~/utils/auth.server";
 import { usePlayer, type PlayableTrack } from "~/lib/player-context";
 import { Button } from "~/components/ui/button";
 import { AlbumCover } from "~/components/album-cover";
+import { mergeMeta } from "~/lib/meta";
 import type { Route } from "./+types/favorites";
 
 export async function action({ request }: Route.ActionArgs) {
@@ -381,8 +382,12 @@ function TrackFavoriteRow({
   );
 }
 
-export function meta() {
-  return [{ title: "Favorites | Reprise" }];
+export function meta({ matches }: Route.MetaArgs) {
+  const parentMeta = matches.flatMap((match) => match?.meta ?? []);
+  return mergeMeta(parentMeta, [
+    { title: "Favorites | Reprise" },
+    { property: "og:title", content: "Favorites | Reprise" },
+  ]);
 }
 
 export function ErrorBoundary() {
