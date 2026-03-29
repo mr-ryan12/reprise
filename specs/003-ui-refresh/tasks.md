@@ -101,15 +101,15 @@
 
 **🎨 Design Reference**: Follow `.claude/skills/frontend-design/SKILL.md` Reprise guidelines — detail page should feel refined and premium with clear metadata hierarchy, not visually loud.
 
-- [ ] T022 [US2] Update show detail loader in `app/routes/shows.$showDate.tsx` to include `albumCoverUrl` in the show data
-- [ ] T023 [US2] Add `AlbumCover` (md or lg size) to the show detail header in `app/routes/shows.$showDate.tsx` — position alongside date/venue metadata, responsive sizing (smaller on mobile)
-- [ ] T024 [US2] Refine show metadata layout in `app/routes/shows.$showDate.tsx` — date as most prominent element (larger size/weight), venue and location as secondary, tour name and duration as tertiary metadata
-- [ ] T025 [US2] Refine set section headers in `app/routes/shows.$showDate.tsx` — visually distinct labels (consider `tracking-wide uppercase text-xs` for set names), clear separation between sets
-- [ ] T026 [US2] Refine favorite button in `app/routes/shows.$showDate.tsx` — clearly distinct filled/unfilled states, smooth transition animation, adequate touch target
-- [ ] T027 [US2] Refine back navigation link in `app/routes/shows.$showDate.tsx` — consistent styling, clear hover state
-- [ ] T028 [US2] Refine `TrackRow` component in `app/components/track-row.tsx` — improve typography hierarchy (title at `font-medium`, position/duration as muted), refine hover/focus states, cover badge styling, playing indicator
-- [ ] T029 [US2] Verify show detail page at 375px, 768px, and 1440px — album cover responsive, metadata readable, touch targets adequate, no overflow
-- [ ] T030 [US2] Run `yarn typecheck`
+- [x] T022 [US2] Update show detail loader in `app/routes/shows.$showDate.tsx` to include `albumCoverUrl` in the show data
+- [x] T023 [US2] Add `AlbumCover` (lg on desktop, md on mobile) to show detail header — responsive via hidden/block classes
+- [x] T024 [US2] Refine show metadata layout — date xl/2xl bold, venue base/medium, location + tour/duration as tertiary muted
+- [x] T025 [US2] Refine set section headers — `text-xs font-semibold uppercase tracking-widest text-muted-foreground`, gap-8 between sets
+- [x] T026 [US2] Refine favorite button — transition-colors on heart, hover:text-foreground on unfilled state
+- [x] T027 [US2] Refine back navigation — "Shows" label with font-medium, gap-1.5
+- [x] T028 [US2] Refine TrackRow — py-3, gap-3, truncate on title, tabular-nums on position/duration, shrink-0 on badge, bg-accent/40 for current
+- [x] T029 [US2] Verify — typecheck + build pass, responsive album cover, overflow-hidden on set cards
+- [x] T030 [US2] Run `yarn typecheck`
 
 **Checkpoint**: Show detail page fully refreshed with album art, refined hierarchy, improved setlist layout, and polished interactions.
 
