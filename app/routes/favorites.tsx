@@ -4,9 +4,11 @@ import {
   useLoaderData,
   useRouteError,
 } from "react-router";
-import { Calendar, Heart, MapPin } from "lucide-react";
+import { AlertCircle, Heart } from "lucide-react";
 import { getUserFavorites } from "~/services/favorite.server";
 import { requireAuth } from "~/utils/auth.server";
+import { Button } from "~/components/ui/button";
+import { ShowCard } from "~/components/show-card";
 import type { Route } from "./+types/favorites";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -22,6 +24,7 @@ export async function loader({ request }: Route.LoaderArgs) {
           id: fav.show.id,
           date: fav.show.date.toISOString().split("T")[0],
           tourName: fav.show.tourName,
+          albumCoverUrl: fav.show.albumCoverUrl,
           venue: fav.show.venue,
         },
       })),
@@ -33,17 +36,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 }
 
-function formatDate(dateString: string) {
-  const [year, month, day] = dateString.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 export default function Favorites() {
   const { favorites } = useLoaderData<typeof loader>();
 
@@ -52,36 +44,25 @@ export default function Favorites() {
       <h1 className="mb-6 text-2xl font-bold tracking-tight">Favorites</h1>
 
       {favorites.length === 0 ? (
-        <div className="rounded-lg border border-border bg-card px-4 py-12 text-center">
-          <Heart className="mx-auto mb-3 size-8 text-muted-foreground" />
-          <p className="text-muted-foreground">
-            No favorites yet. Browse{" "}
-            <Link to="/shows" className="underline hover:text-foreground">
-              shows
-            </Link>{" "}
-            and tap the heart to save your favorites.
+        <div className="rounded-lg border border-border bg-card px-6 py-16 text-center">
+          <Heart className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+          <p className="font-medium text-foreground">No favorites yet</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Browse shows and tap the heart to save your favorites.
           </p>
+          <Button variant="outline" size="sm" asChild className="mt-4">
+            <Link to="/shows">Browse shows</Link>
+          </Button>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
           {favorites.map((fav) => (
-            <Link
+            <ShowCard
               key={fav.id}
-              to={`/shows/${fav.show.date}`}
-              className="group flex flex-col gap-1 rounded-lg border border-border bg-card px-4 py-3 transition-colors hover:bg-muted sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="flex items-center gap-2 font-medium">
-                <Calendar className="size-4 shrink-0 text-muted-foreground" />
-                <span>{formatDate(fav.show.date)}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground sm:text-right">
-                <MapPin className="size-4 shrink-0 sm:hidden" />
-                <span>
-                  {fav.show.venue.name} &middot; {fav.show.venue.city},{" "}
-                  {fav.show.venue.state}
-                </span>
-              </div>
-            </Link>
+              show={fav.show}
+              isFavorited
+              linkTo={`/shows/${fav.show.date}`}
+            />
           ))}
         </div>
       )}
@@ -101,11 +82,14 @@ export function ErrorBoundary() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="mb-4 text-2xl font-bold">Error</h1>
-      <p className="text-muted-foreground">{message}</p>
-      <Link to="/shows" className="mt-4 inline-block text-sm underline">
-        Back to shows
-      </Link>
+      <div className="rounded-lg border border-border bg-card px-6 py-16 text-center">
+        <AlertCircle className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+        <h1 className="text-lg font-semibold">Something went wrong</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{message}</p>
+        <Button variant="outline" size="sm" asChild className="mt-4">
+          <Link to="/shows">Browse shows</Link>
+        </Button>
+      </div>
     </div>
   );
 }
