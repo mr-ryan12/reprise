@@ -1,4 +1,5 @@
-import { Pause, Play } from "lucide-react";
+import { useFetcher } from "react-router";
+import { Heart, Pause, Play } from "lucide-react";
 import { usePlayer, type PlayableTrack } from "~/lib/player-context";
 import { Badge } from "~/components/ui/badge";
 
@@ -18,6 +19,8 @@ interface TrackRowProps {
   venueName: string;
   setName: string;
   setTracks: PlayableTrack[];
+  isFavorited?: boolean;
+  isLoggedIn?: boolean;
 }
 
 function formatDuration(ms: number) {
@@ -33,8 +36,15 @@ export function TrackRow({
   venueName,
   setName,
   setTracks,
+  isFavorited = false,
+  isLoggedIn = false,
 }: TrackRowProps) {
   const { currentTrack, isPlaying, play, pause, resume } = usePlayer();
+  const fetcher = useFetcher();
+
+  // Optimistic: if fetcher is submitting, toggle from current state
+  const optimisticFavorited =
+    fetcher.state !== "idle" ? !isFavorited : isFavorited;
 
   const isCurrentTrack = currentTrack?.id === track.id;
   const isPlayable = Boolean(track.mp3Url);
@@ -109,11 +119,35 @@ export function TrackRow({
           </Badge>
         )}
       </div>
-      {track.duration && (
-        <span className="shrink-0 text-sm tabular-nums text-muted-foreground">
-          {formatDuration(track.duration)}
-        </span>
-      )}
+      <div className="flex shrink-0 items-center gap-2">
+        {track.duration && (
+          <span className="text-sm tabular-nums text-muted-foreground">
+            {formatDuration(track.duration)}
+          </span>
+        )}
+        {isLoggedIn && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              fetcher.submit(
+                { intent: "track-favorite", trackId: track.id },
+                { method: "post" },
+              );
+            }}
+            className="flex size-7 items-center justify-center rounded-md transition-colors hover:bg-accent"
+            aria-label={optimisticFavorited ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart
+              className={`size-3.5 transition-colors ${
+                optimisticFavorited
+                  ? "fill-red-500 text-red-500"
+                  : "text-muted-foreground/50 hover:text-foreground"
+              }`}
+            />
+          </button>
+        )}
+      </div>
     </div>
   );
 }

@@ -47,3 +47,48 @@ export async function getUserFavoriteShowIds(
   });
   return new Set(favorites.map((f) => f.showId));
 }
+
+// Track favorites
+
+export async function toggleTrackFavorite(userId: string, trackId: string) {
+  const existing = await prisma.trackFavorite.findUnique({
+    where: { userId_trackId: { userId, trackId } },
+  });
+
+  if (existing) {
+    await prisma.trackFavorite.delete({ where: { id: existing.id } });
+    return false;
+  }
+
+  await prisma.trackFavorite.create({ data: { userId, trackId } });
+  return true;
+}
+
+export async function getUserFavoriteTrackIds(
+  userId: string,
+): Promise<Set<string>> {
+  const favorites = await prisma.trackFavorite.findMany({
+    where: { userId },
+    select: { trackId: true },
+  });
+  return new Set(favorites.map((f) => f.trackId));
+}
+
+export async function getUserTrackFavorites(userId: string) {
+  return prisma.trackFavorite.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      track: {
+        include: {
+          song: { select: { title: true, original: true, artist: true } },
+          show: {
+            include: {
+              venue: { select: { name: true, city: true, state: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+}

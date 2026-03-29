@@ -8,7 +8,12 @@ import {
 } from "react-router";
 import { ArrowLeft, Calendar, Clock, Heart, Music } from "lucide-react";
 import { getShowByDate } from "~/services/show.server";
-import { isShowFavorited, toggleFavorite } from "~/services/favorite.server";
+import {
+  isShowFavorited,
+  toggleFavorite,
+  toggleTrackFavorite,
+  getUserFavoriteTrackIds,
+} from "~/services/favorite.server";
 import { getOptionalUser, requireAuth } from "~/utils/auth.server";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
@@ -28,9 +33,12 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     }
 
     const userId = await getOptionalUser(request);
-    const isFavorited = userId
-      ? await isShowFavorited(userId, show.id)
-      : null;
+    const [isFavorited, favoriteTrackIds] = userId
+      ? await Promise.all([
+          isShowFavorited(userId, show.id),
+          getUserFavoriteTrackIds(userId),
+        ])
+      : [null, new Set<string>()];
 
     const tracksBySet = new Map<string, typeof show.tracks>();
     for (const track of show.tracks) {
@@ -57,6 +65,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
           duration: t.duration,
           mp3Url: t.mp3Url,
           song: t.song,
+          isFavorited: favoriteTrackIds.has(t.id),
         })),
       })),
       isFavorited,
@@ -73,12 +82,19 @@ export async function action({ params, request }: Route.ActionArgs) {
 
   try {
     const userId = await requireAuth(request);
-    const show = await getShowByDate(showDate);
+    const formData = await request.formData();
+    const intent = String(formData.get("intent") ?? "");
 
-    if (!show) {
-      throw new Response("Show not found", { status: 404 });
+    if (intent === "track-favorite") {
+      const trackId = String(formData.get("trackId") ?? "");
+      if (!trackId) throw new Response("Track ID required", { status: 400 });
+      const isFavorited = await toggleTrackFavorite(userId, trackId);
+      return { isFavorited };
     }
 
+    // show-favorite (default)
+    const show = await getShowByDate(showDate);
+    if (!show) throw new Response("Show not found", { status: 404 });
     await toggleFavorite(userId, show.id);
     return redirect(`/shows/${showDate}`);
   } catch (error) {
@@ -139,7 +155,7 @@ export default function ShowDetail() {
               {formatDate(show.date)}
             </h1>
             <Form method="post" className="shrink-0">
-              <input type="hidden" name="intent" value="favorite" />
+              <input type="hidden" name="intent" value="show-favorite" />
               <Button
                 type="submit"
                 variant="ghost"
@@ -223,6 +239,8 @@ export default function ShowDetail() {
                         venueName={show.venue.name}
                         setName={set.name}
                         setTracks={setTracks}
+                        isFavorited={track.isFavorited}
+                        isLoggedIn={isFavorited !== null}
                       />
                     </div>
                   ))}
