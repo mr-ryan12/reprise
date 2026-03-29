@@ -58,12 +58,12 @@
 
 **🎨 Design Reference**: Read `.claude/skills/frontend-design/SKILL.md` (especially the "Reprise Project-Specific Guidance" section) before starting any task in this phase.
 
-- [ ] T009 Refine OKLCH color token values in `app/app.css` — adjust dark mode card/border contrast, consider subtle warm accent for `--accent` token, ensure light/dark mode harmony
-- [ ] T010 [P] Define typography scale refinements in `app/app.css` — ensure three-tier hierarchy works with existing Tailwind utilities (no new custom classes needed if standard utilities suffice)
-- [ ] T011 [P] Create default album cover fallback SVG at `public/images/default-album-cover.svg` — square aspect ratio, music-themed, works in light/dark mode, <5KB
-- [ ] T012 Create `AlbumCover` component in `app/components/album-cover.tsx` — accepts `src: string | null`, `alt: string`, `size?: "sm" | "md" | "lg"` (sm=48px, md=80px, lg=160px), renders `<img>` with fallback to default SVG, `loading="lazy"`, fixed aspect-ratio, rounded corners
-- [ ] T013 Create `ShowCard` component in `app/components/show-card.tsx` — accepts show data (id, date, tourName, venue, albumCoverUrl, isFavorited), renders as `<Link>` with AlbumCover thumbnail (sm size), three-tier typography (date prominent, venue secondary, location tertiary), optional heart indicator, hover state
-- [ ] T014 Run `yarn typecheck` to verify new components compile
+- [x] T009 Refine OKLCH color token values in `app/app.css` — subtle warm hue (60-80 range) added across light/dark tokens for warmth; improved dark mode card/border contrast
+- [x] T010 [P] Define typography scale refinements in `app/app.css` — three-tier hierarchy via standard Tailwind utilities (text-base font-semibold / text-sm font-medium / text-sm text-muted-foreground), no custom classes needed
+- [x] T011 [P] Create default album cover fallback SVG at `public/images/default-album-cover.svg` — vinyl record motif, square, warm tones, <2KB
+- [x] T012 Create `AlbumCover` component in `app/components/album-cover.tsx` — src/alt/size props, fallback to default SVG, lazy loading, aspect-square, rounded-md
+- [x] T013 Create `ShowCard` component in `app/components/show-card.tsx` — Link with AlbumCover thumbnail, three-tier typography, optional heart, hover:bg-accent
+- [x] T014 Run `yarn typecheck` to verify new components compile
 
 **Checkpoint**: Design tokens refined, AlbumCover and ShowCard components ready. All route pages can now use the shared components.
 

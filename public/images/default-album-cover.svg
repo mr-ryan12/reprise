@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <rect width="200" height="200" rx="8" fill="oklch(0.92 0.008 60)"/>
+  <circle cx="100" cy="100" r="60" stroke="oklch(0.82 0.012 60)" stroke-width="1.5" fill="none"/>
+  <circle cx="100" cy="100" r="40" stroke="oklch(0.82 0.012 60)" stroke-width="1" fill="none"/>
+  <circle cx="100" cy="100" r="20" stroke="oklch(0.82 0.012 60)" stroke-width="0.75" fill="none"/>
+  <circle cx="100" cy="100" r="6" fill="oklch(0.78 0.015 60)"/>
+  <line x1="100" y1="40" x2="100" y2="94" stroke="oklch(0.85 0.01 60)" stroke-width="0.75"/>
+</svg>
