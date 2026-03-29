@@ -200,10 +200,10 @@
 
 ### Implementation for User Story 7
 
-- [ ] T052 [US7] Verify AlbumCover fallback behavior — test with shows that have null `albumCoverUrl`, confirm default image renders at correct size in both ShowCard and show detail header
-- [ ] T053 [US7] Verify no Cumulative Layout Shift — album cover images should have fixed dimensions via aspect-ratio, test with throttled network
-- [ ] T054 [US7] Verify album cover display on show detail page for shows with real cover art — correct sizing, responsive behavior on mobile
-- [ ] T055 [US7] Run `yarn typecheck`
+- [x] T052 [US7] Verify AlbumCover fallback behavior — test with shows that have null `albumCoverUrl`, confirm default image renders at correct size in both ShowCard and show detail header
+- [x] T053 [US7] Verify no Cumulative Layout Shift — album cover images should have fixed dimensions via aspect-ratio, test with throttled network
+- [x] T054 [US7] Verify album cover display on show detail page for shows with real cover art — correct sizing, responsive behavior on mobile
+- [x] T055 [US7] Run `yarn typecheck`
 
 **Checkpoint**: Album covers display correctly everywhere with graceful fallback and no layout shift.
 
@@ -217,10 +217,10 @@
 
 ### Implementation for User Story 8
 
-- [ ] T056 [US8] Refine expanded player layout in `app/components/audio-player.tsx` — update typography (song title, metadata), control button spacing, progress bar styling to match refreshed tokens
-- [ ] T057 [US8] Refine minimized player layout in `app/components/audio-player.tsx` — consistent compact styling, progress bar, control alignment
-- [ ] T058 [US8] Verify player on mobile (minimized default) and desktop (expanded default) — controls reachable, text truncation works, progress bar interactive
-- [ ] T059 [US8] Run `yarn typecheck`
+- [x] T056 [US8] Refine expanded player layout in `app/components/audio-player.tsx` — update typography (song title, metadata), control button spacing, progress bar styling to match refreshed tokens
+- [x] T057 [US8] Refine minimized player layout in `app/components/audio-player.tsx` — consistent compact styling, progress bar, control alignment
+- [x] T058 [US8] Verify player on mobile (minimized default) and desktop (expanded default) — controls reachable, text truncation works, progress bar interactive
+- [x] T059 [US8] Run `yarn typecheck`
 
 **Checkpoint**: Audio player visually integrated with refreshed design language in both states.
 
@@ -230,12 +230,12 @@
 
 **Purpose**: Final verification, edge case handling, and consistency audit
 
-- [ ] T060 [P] Verify long venue name truncation on show cards — test with cards that have very long venue names, ensure graceful truncation without layout breakage
-- [ ] T061 [P] Verify audio player overlap with short-content pages — test empty favorites with player open, ensure content is not obscured
-- [ ] T062 [P] Verify ultra-wide viewport (2560px+) — content centered and constrained, no full-width stretching
-- [ ] T063 Test `prefers-reduced-motion` — disable animations, verify all transitions respect the media query
-- [ ] T064 Run full `yarn typecheck` and verify zero errors
-- [ ] T065 Run `yarn build` to confirm production build succeeds
+- [x] T060 [P] Verify long venue name truncation on show cards — test with cards that have very long venue names, ensure graceful truncation without layout breakage
+- [x] T061 [P] Verify audio player overlap with short-content pages — test empty favorites with player open, ensure content is not obscured
+- [x] T062 [P] Verify ultra-wide viewport (2560px+) — content centered and constrained, no full-width stretching
+- [x] T063 Test `prefers-reduced-motion` — disable animations, verify all transitions respect the media query
+- [x] T064 Run full `yarn typecheck` and verify zero errors
+- [x] T065 Run `yarn build` to confirm production build succeeds
 
 **Checkpoint**: All edge cases verified, typecheck and build pass. UI refresh complete.
 
