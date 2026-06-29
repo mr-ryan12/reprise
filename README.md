@@ -1,65 +1,82 @@
-# Welcome to React Router!
+# Reprise
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A Phish show discovery app for browsing, searching, and saving your favorite concerts and tracks. Show data is sourced from the [Phish.in](https://phish.in/) API.
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- Browse a paginated list of Phish shows
+- Search shows by song, venue, date, or city
+- View show detail pages with full setlists and track info
+- Save favorite shows and tracks (requires login)
+- Username-only authentication
+
+## Tech Stack
+
+- React 19 + React Router 7 (SSR)
+- PostgreSQL + Prisma ORM
+- Tailwind CSS v4 + shadcn/ui
+- Vite 7
+- Yarn 4
 
 ## Getting Started
 
-### Installation
+### Prerequisites
 
-Install the dependencies:
+- Node.js 20+
+- PostgreSQL database
 
-```bash
-npm install
-```
+### Setup
 
-### Development
+1. Enable Corepack (required for Yarn 4):
 
-Start the development server with HMR:
+   ```bash
+   corepack enable
+   ```
 
-```bash
-npm run dev
-```
+2. Install dependencies:
 
-Your application will be available at `http://localhost:5173`.
+   ```bash
+   yarn install
+   ```
 
-## Building for Production
+3. Copy `.env.example` to `.env` and fill in your values:
 
-Create a production build:
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-npm run build
-```
+   - `DATABASE_URL` — PostgreSQL connection string
+   - `SESSION_SECRET` — a random string for signing cookies
 
-## Deployment
+4. Set up the database:
 
-### DIY Deployment
+   ```bash
+   yarn prisma:generate
+   yarn migrate:latest
+   npx prisma db seed
+   ```
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
+   The seed script fetches all shows, venues, songs, and tracks from Phish.in. This takes a while on first run.
 
-Make sure to deploy the output of `npm run build`
+5. Start the dev server:
 
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
+   ```bash
+   yarn dev
+   ```
 
-## Styling
+   The app will be available at `http://localhost:5173`.
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+## Scripts
 
----
-
-Built with ❤️ using React Router.
+| Command | Description |
+|---------|-------------|
+| `yarn dev` | Start dev server with HMR |
+| `yarn build` | Production build |
+| `yarn start` | Run production server |
+| `yarn typecheck` | Type-check with `tsc` |
+| `yarn prisma:generate` | Generate Prisma client |
+| `yarn db:push` | Push schema to database |
+| `yarn migrate:new` | Create a new migration |
+| `yarn migrate:latest` | Run pending migrations |
+| `npx prisma db seed` | Seed data from Phish.in |
+| `npx prisma studio` | Open database GUI |
