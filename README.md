@@ -2,6 +2,8 @@
 
 A Phish show discovery app for browsing, searching, and saving your favorite concerts and tracks. Show data is sourced from the [Phish.in](https://phish.in/) API.
 
+Live at [reprise.dev](https://reprise.dev)
+
 ## Features
 
 - Browse a paginated list of Phish shows
@@ -68,15 +70,15 @@ A Phish show discovery app for browsing, searching, and saving your favorite con
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `yarn dev` | Start dev server with HMR |
-| `yarn build` | Production build |
-| `yarn start` | Run production server |
-| `yarn typecheck` | Type-check with `tsc` |
-| `yarn prisma:generate` | Generate Prisma client |
-| `yarn db:push` | Push schema to database |
-| `yarn migrate:new` | Create a new migration |
-| `yarn migrate:latest` | Run pending migrations |
-| `npx prisma db seed` | Seed data from Phish.in |
-| `npx prisma studio` | Open database GUI |
+| Command                | Description               |
+| ---------------------- | ------------------------- |
+| `yarn dev`             | Start dev server with HMR |
+| `yarn build`           | Production build          |
+| `yarn start`           | Run production server     |
+| `yarn typecheck`       | Type-check with `tsc`     |
+| `yarn prisma:generate` | Generate Prisma client    |
+| `yarn db:push`         | Push schema to database   |
+| `yarn migrate:new`     | Create a new migration    |
+| `yarn migrate:latest`  | Run pending migrations    |
+| `npx prisma db seed`   | Seed data from Phish.in   |
+| `npx prisma studio`    | Open database GUI         |
