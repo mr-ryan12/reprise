@@ -12,7 +12,8 @@
     "migrate:latest": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "backfill:mp3urls": "tsx prisma/backfill-mp3-urls.ts",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:update": "tsx prisma/update.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
