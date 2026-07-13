@@ -7,6 +7,11 @@ import {
   fetchAllSongs,
   type PhishinVenue,
 } from "../app/services/phishin.server";
+import {
+  upsertVenue,
+  upsertShow,
+  syncShowTracks,
+} from "../app/services/show-sync.server";
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
@@ -49,23 +54,8 @@ async function main() {
   console.log(`  Found ${venueMap.size} unique venues. Upserting...`);
   const venueIdBySlug = new Map<string, string>();
   for (const venue of venueMap.values()) {
-    const record = await prisma.venue.upsert({
-      where: { slug: venue.slug },
-      update: {
-        name: venue.name,
-        city: venue.city,
-        state: venue.state,
-        country: venue.country,
-      },
-      create: {
-        slug: venue.slug,
-        name: venue.name,
-        city: venue.city,
-        state: venue.state,
-        country: venue.country,
-      },
-    });
-    venueIdBySlug.set(venue.slug, record.id);
+    const venueId = await upsertVenue(prisma, venue);
+    venueIdBySlug.set(venue.slug, venueId);
   }
   console.log("  Venues done.");
 
@@ -85,63 +75,17 @@ async function main() {
     }
 
     const venueId = venueIdBySlug.get(show.venue.slug)!;
-    const showRecord = await prisma.show.upsert({
-      where: { date: new Date(show.date) },
-      update: {
-        duration: show.duration,
-        tourName: show.tour_name,
-        notes: show.taper_notes,
-        albumCoverUrl: show.album_cover_url,
-        venueId,
-      },
-      create: {
-        date: new Date(show.date),
-        duration: show.duration,
-        tourName: show.tour_name,
-        notes: show.taper_notes,
-        albumCoverUrl: show.album_cover_url,
-        venueId,
-      },
-    });
+    const showRecord = await upsertShow({ prisma, show, venueId });
 
     // Fetch track/setlist detail for this show
     try {
       const detail = await fetchShowDetail(show.date);
-      // Delete existing tracks for idempotent re-runs
-      await prisma.track.deleteMany({ where: { showId: showRecord.id } });
-
-      for (const track of detail.tracks) {
-        const song = track.songs[0];
-        if (!song) continue;
-
-        let songId = songSlugToId.get(song.slug);
-        if (!songId) {
-          // Song not in catalog — create it
-          const newSong = await prisma.song.upsert({
-            where: { slug: song.slug },
-            update: {},
-            create: {
-              slug: song.slug,
-              title: song.title,
-              original: song.original,
-              artist: song.artist,
-            },
-          });
-          songId = newSong.id;
-          songSlugToId.set(song.slug, songId);
-        }
-
-        await prisma.track.create({
-          data: {
-            showId: showRecord.id,
-            songId,
-            setName: track.set_name,
-            position: track.position,
-            duration: track.duration,
-            mp3Url: track.mp3_url ?? null,
-          },
-        });
-      }
+      await syncShowTracks({
+        prisma,
+        showId: showRecord.id,
+        detail,
+        songSlugToId,
+      });
     } catch (err) {
       console.warn(`  ⚠️  Failed to fetch tracks for ${show.date}:`, err instanceof Error ? err.message : err);
     }
