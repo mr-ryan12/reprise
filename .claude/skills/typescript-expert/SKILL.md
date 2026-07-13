@@ -94,6 +94,29 @@ Avoid `as SomeType` casts of arbitrary values — write a type guard instead.
 Reserve `!` for environment-variable boundaries where crashing fast is correct
 (`process.env.SESSION_SECRET!`). Elsewhere use `??` or an early return.
 
+## Parameters — destructured options object past two args
+
+A function taking **more than two parameters** must accept a single destructured
+options object typed by a named `interface` (no `I` prefix, placed directly above
+the function). Two or fewer parameters may stay positional. Route loaders/actions
+and component props already follow this.
+
+```ts
+interface SyncShowTracksParams {
+  prisma: PrismaClient;
+  showId: string;
+  detail: PhishinShowDetail;
+  songSlugToId: Map<string, string>;
+}
+
+export async function syncShowTracks({
+  prisma,
+  showId,
+  detail,
+  songSlugToId,
+}: SyncShowTracksParams): Promise<number> { /* ... */ }
+```
+
 ## Naming (match existing code)
 
 - Interfaces/types: `PascalCase`, **no** `I`/`T` prefix (e.g. `PhishinTrack`,
