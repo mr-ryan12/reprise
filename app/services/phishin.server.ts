@@ -62,19 +62,33 @@ interface PhishinPaginatedResponse {
   [key: string]: unknown;
 }
 
-async function fetchAllPages<T>(
-  endpoint: string,
-  resourceKey: string,
-  perPage = 100
-): Promise<T[]> {
+interface FetchAllPagesParams {
+  endpoint: string;
+  resourceKey: string;
+  perPage?: number;
+  extraParams?: Record<string, string | undefined>;
+}
+
+async function fetchAllPages<T>({
+  endpoint,
+  resourceKey,
+  perPage = 100,
+  extraParams,
+}: FetchAllPagesParams): Promise<T[]> {
   const all: T[] = [];
   let page = 1;
   let totalPages = 1;
 
+  const definedExtraParams = extraParams
+    ? Object.fromEntries(
+        Object.entries(extraParams).filter(([, value]) => value !== undefined)
+      )
+    : undefined;
+
   do {
     await delay(RATE_LIMIT_MS);
     const { data } = await client.get<PhishinPaginatedResponse>(endpoint, {
-      params: { per_page: perPage, page },
+      params: { per_page: perPage, page, ...definedExtraParams },
     });
     const items = data[resourceKey] as T[];
     all.push(...items);
@@ -85,8 +99,20 @@ async function fetchAllPages<T>(
   return all;
 }
 
-export async function fetchAllShows(): Promise<PhishinShowSummary[]> {
-  return fetchAllPages<PhishinShowSummary>("/shows", "shows");
+export async function fetchAllShows(options?: {
+  startDate?: string;
+  endDate?: string;
+  sort?: string;
+}): Promise<PhishinShowSummary[]> {
+  return fetchAllPages<PhishinShowSummary>({
+    endpoint: "/shows",
+    resourceKey: "shows",
+    extraParams: {
+      start_date: options?.startDate,
+      end_date: options?.endDate,
+      sort: options?.sort,
+    },
+  });
 }
 
 export async function fetchShowDetail(
@@ -99,5 +125,5 @@ export async function fetchShowDetail(
 }
 
 export async function fetchAllSongs(): Promise<PhishinSong[]> {
-  return fetchAllPages<PhishinSong>("/songs", "songs");
+  return fetchAllPages<PhishinSong>({ endpoint: "/songs", resourceKey: "songs" });
 }

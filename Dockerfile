@@ -16,6 +16,11 @@ ENV NODE_ENV=production
 RUN yarn install --immutable
 COPY prisma ./prisma
 RUN npx prisma generate --schema=prisma/schema.prisma
+# Source needed at runtime by the scheduled `yarn db:update` cron service, which
+# runs `tsx prisma/update.ts` importing from app/services/*. The web server serves
+# from ./build and never loads these, so this is harmless (and unused) for it.
+COPY tsconfig.json ./
+COPY app ./app
 COPY --from=build /app/build ./build
 EXPOSE 3000
 CMD ["yarn", "start"]

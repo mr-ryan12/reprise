@@ -1,0 +1,17 @@
+# Deploy config for the SCHEDULED show-data update service — a SEPARATE Railway
+# service from the web app, in the same project. Point that service's config-as-code
+# path at this file (Settings -> Config-as-code -> railway.cron.toml). It reuses the
+# repo Dockerfile, overrides the start command to run the incremental update, and
+# runs on a cron schedule instead of staying up.
+#
+# On that service, set DATABASE_URL = ${{Postgres.DATABASE_URL}} so it connects over
+# Railway's PRIVATE network (no egress fees). It needs no other env vars.
+#
+# Intentionally omits the web service's healthcheck and `migrate:latest` predeploy —
+# this is a one-shot job, not a long-running server, and migrations stay the web
+# service's responsibility.
+
+[deploy]
+startCommand = "yarn db:update"
+# Daily at 11:00 UTC. Change to taste; e.g. "0 */6 * * *" for every 6 hours.
+cronSchedule = "0 11 * * *"

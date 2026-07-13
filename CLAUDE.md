@@ -57,6 +57,7 @@ yarn prisma studio    # Open database GUI
 - Route loaders/actions orchestrate services but MUST NOT contain Prisma calls directly.
 - Services MUST NOT import from route modules or components.
 - External APIs (Phish.in) MUST be behind adapter services (`app/services/phishin.server.ts`).
+- Repeated logic MUST be extracted into a shared service or util — no copy/paste across scripts, routes, or services.
 
 ### TypeScript (Constitution I)
 
@@ -64,12 +65,15 @@ yarn prisma studio    # Open database GUI
 - Use Prisma-generated types. Do not hand-roll types that duplicate the schema.
 - The `any` type is prohibited except with an explanatory comment.
 - Path alias: `~/` maps to `app/`.
+- Do not add dependencies unless the work requires it — prefer existing libraries.
+- Functions taking more than two parameters MUST accept a single destructured options object typed by a named `interface` (no `I` prefix); two or fewer may stay positional. Route loaders/actions and component props already follow this.
 
 ### Data Layer (Constitution III)
 
 - Schema defined in `prisma/schema.prisma` — single source of truth.
 - Domain models MUST have `id`, `createdAt`, `updatedAt` (exceptions: Track, User — documented in data-model.md).
 - No raw SQL unless Prisma can't express the query, with a comment explaining why.
+- Schema changes ship with a Prisma migration, a rollback note, and a backfill plan when existing rows are affected.
 
 ### Auth Pattern
 
@@ -120,7 +124,7 @@ prisma/
 | `DATABASE_URL` | PostgreSQL connection string | Yes |
 | `SESSION_SECRET` | Cookie signing secret | Yes |
 
-Secrets MUST NOT be committed. See `.env.example` for template.
+Secrets MUST NOT be committed or logged (redact where needed). See `.env.example` for template.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
