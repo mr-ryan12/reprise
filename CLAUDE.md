@@ -66,6 +66,7 @@ yarn prisma studio    # Open database GUI
 - The `any` type is prohibited except with an explanatory comment.
 - Path alias: `~/` maps to `app/`.
 - Do not add dependencies unless the work requires it — prefer existing libraries.
+- Functions taking more than two parameters MUST accept a single destructured options object typed by a named `interface` (no `I` prefix); two or fewer may stay positional. Route loaders/actions and component props already follow this.
 
 ### Data Layer (Constitution III)
 
